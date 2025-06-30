@@ -1,0 +1,1546 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap');
+
+/* Importing fonts */
+
+/* Tailwind CSS imports */
+
+*, ::before, ::after{
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
+}
+
+::backdrop{
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
+}
+
+/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */
+
+/*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  /* 1 */
+  border-width: 0;
+  /* 2 */
+  border-style: solid;
+  /* 2 */
+  border-color: #e5e7eb;
+  /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+5. Use the user's configured `sans` font-feature-settings by default.
+6. Use the user's configured `sans` font-variation-settings by default.
+7. Disable tap highlights on iOS
+*/
+
+html,
+:host {
+  line-height: 1.5;
+  /* 1 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */
+  -moz-tab-size: 4;
+  /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4;
+  /* 3 */
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* 4 */
+  font-feature-settings: normal;
+  /* 5 */
+  font-variation-settings: normal;
+  /* 6 */
+  -webkit-tap-highlight-color: transparent;
+  /* 7 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0;
+  /* 1 */
+  line-height: inherit;
+  /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0;
+  /* 1 */
+  color: inherit;
+  /* 2 */
+  border-top-width: 1px;
+  /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font-family by default.
+2. Use the user's configured `mono` font-feature-settings by default.
+3. Use the user's configured `mono` font-variation-settings by default.
+4. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  /* 1 */
+  font-feature-settings: normal;
+  /* 2 */
+  font-variation-settings: normal;
+  /* 3 */
+  font-size: 1em;
+  /* 4 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0;
+  /* 1 */
+  border-color: inherit;
+  /* 2 */
+  border-collapse: collapse;
+  /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  /* 1 */
+  font-feature-settings: inherit;
+  /* 1 */
+  font-variation-settings: inherit;
+  /* 1 */
+  font-size: 100%;
+  /* 1 */
+  font-weight: inherit;
+  /* 1 */
+  line-height: inherit;
+  /* 1 */
+  letter-spacing: inherit;
+  /* 1 */
+  color: inherit;
+  /* 1 */
+  margin: 0;
+  /* 2 */
+  padding: 0;
+  /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+input:where([type='button']),
+input:where([type='reset']),
+input:where([type='submit']) {
+  -webkit-appearance: button;
+  /* 1 */
+  background-color: transparent;
+  /* 2 */
+  background-image: none;
+  /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield;
+  /* 1 */
+  outline-offset: -2px;
+  /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  /* 1 */
+  font: inherit;
+  /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Reset default styling for dialogs.
+*/
+
+dialog {
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1;
+  /* 1 */
+  color: #9ca3af;
+  /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1;
+  /* 1 */
+  color: #9ca3af;
+  /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  /* 1 */
+  vertical-align: middle;
+  /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+
+[hidden]:where(:not([hidden="until-found"])) {
+  display: none;
+}
+
+.container{
+  width: 100%;
+}
+
+@media (min-width: 640px){
+  .container{
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px){
+  .container{
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px){
+  .container{
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px){
+  .container{
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px){
+  .container{
+    max-width: 1536px;
+  }
+}
+
+.relative{
+  position: relative;
+}
+
+.mt-1{
+  margin-top: 0.25rem;
+}
+
+.mt-2{
+  margin-top: 0.5rem;
+}
+
+.mt-4{
+  margin-top: 1rem;
+}
+
+.flex{
+  display: flex;
+}
+
+.contents{
+  display: contents;
+}
+
+.h-24{
+  height: 6rem;
+}
+
+.h-40{
+  height: 10rem;
+}
+
+.h-screen{
+  height: 100vh;
+}
+
+.w-36{
+  width: 9rem;
+}
+
+.w-40{
+  width: 10rem;
+}
+
+.w-48{
+  width: 12rem;
+}
+
+.w-screen{
+  width: 100vw;
+}
+
+.rotate-\[-90deg\]{
+  --tw-rotate: -90deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.transform{
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.flex-col{
+  flex-direction: column;
+}
+
+.items-center{
+  align-items: center;
+}
+
+.justify-center{
+  justify-content: center;
+}
+
+.bg-black{
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1));
+}
+
+.text-2xl{
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-lg{
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-sm{
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-xl{
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.font-bold{
+  font-weight: 700;
+}
+
+.text-cyan-400{
+  --tw-text-opacity: 1;
+  color: rgb(34 211 238 / var(--tw-text-opacity, 1));
+}
+
+.text-white{
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.transition{
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.ease-out{
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Custom CSS Variables for Minimalist Palette */
+
+:root {
+  --color-background-deep: #00050A;
+  /* Near black */
+  --color-background-panel: rgba(16, 21, 26, 0.7);
+  /* Dark charcoal translucent */
+  --color-border-subtle: rgba(0, 192, 216, 0.1);
+  /* Muted cyan outline */
+  --color-accent-primary: #00C0D8;
+  /* Muted Cyan */
+  --color-accent-secondary: rgba(255, 215, 0, 0.4);
+  /* Subtle Amber/Gold glow for AI sessions/highlights */
+  --color-text-light: #E8E8E8;
+  --color-text-muted: #B0B0B0;
+  --color-warning: #FFA500;
+  /* Amber for warnings (e.g., GPU temp) */
+  --color-critical: #FF4444;
+  /* Red for critical (e.g., CPU temp) */
+  --color-gpu-accent: #C060FF;
+  /* Muted Purple for GPU-specific elements */
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-background-deep);
+  color: var(--color-text-light);
+  font-family: 'Rajdhani', sans-serif;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Subtle background grid/noise */
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 192, 216, 0.02),
+      rgba(0, 192, 216, 0.02) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 192, 216, 0.02),
+      rgba(0, 192, 216, 0.02) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.3;
+}
+
+.header-container {
+  /* This container will serve as the draggable area at the top */
+  padding-top: 15px;
+  /* Space from top edge */
+  padding-bottom: 25px;
+  -webkit-app-region: drag;
+  /* Make this area draggable */
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  /* Prevent text selection on drag area */
+  position: relative;
+  /* For positioning the close button */
+}
+
+h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5em;
+  /* Slightly smaller for minimalism */
+  color: var(--color-text-light);
+  text-shadow: 0 0 10px rgba(0, 192, 216, 0.5);
+  /* Subtle cyan glow */
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+h1 .main-title {
+  color: var(--color-accent-primary);
+  /* Cyan for HackexAI itself */
+  text-shadow: 0 0 15px var(--color-accent-primary), 0 0 30px var(--color-accent-primary);
+  /* More prominent glow */
+}
+
+h1 .subtitle {
+  display: block;
+  font-size: 0.35em;
+  /* Adjusted size */
+  color: var(--color-text-muted);
+  margin-top: 6px;
+  /* Reduced margin */
+  letter-spacing: 3px;
+  /* Slightly reduced */
+  font-family: 'Roboto Mono', monospace;
+  text-shadow: none;
+  opacity: 0.8;
+  -webkit-app-region: no-drag;
+  /* Ensure text is not part of drag area */
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 5px;
+  -webkit-app-region: no-drag;
+  /* Make button clickable */
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: var(--color-accent-primary);
+}
+
+h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6em;
+  color: var(--color-accent-primary);
+  margin-bottom: 25px;
+  text-shadow: 0 0 5px rgba(0, 192, 216, 0.2);
+}
+
+h3 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1em;
+  color: var(--color-text-light);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+/* Main Layout Grid (using flexbox for simpler `React.createElement` structure) */
+
+.app-container {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 30px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.panel {
+  background: var(--color-background-panel);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: 0 0 12px rgba(0, 192, 216, 0.05), inset 0 0 6px rgba(0, 192, 216, 0.02);
+  -webkit-backdrop-filter: blur(6px) saturate(130%);
+          backdrop-filter: blur(6px) saturate(130%);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.panel:hover {
+  border-color: rgba(0, 192, 216, 0.3);
+  box-shadow: 0 0 20px rgba(0, 192, 216, 0.1), inset 0 0 10px rgba(0, 192, 216, 0.05);
+  transform: translateY(-2px);
+  /* Subtle lift on hover */
+}
+
+/* Specific Panel Widths */
+
+.system-stats-panel {
+  width: 300px;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 12px;
+  height: 100%;
+  position: relative;
+}
+
+.desktop-panel {
+  /* This panel is now in the middle */
+  flex-grow: 1;
+  /* Desktop panel takes remaining space */
+  width: 450px;
+  /* Base width */
+  overflow-y: auto;
+  /* Enable scrolling for desktop icons if needed */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Align icons to the top-left */
+  padding: 20px;
+}
+
+.ai-chat-panel {
+  /* This panel is now on the right */
+  width: 380px;
+  /* Fixed width for AI chat */
+}
+
+/* System Stats Panel */
+
+.system-stats-panel {
+  justify-content: flex-start;
+  overflow-y: auto;
+}
+
+/* Always keep the boost button at the bottom of the system-stats-panel */
+
+.system-stats-panel > .action-button {
+  margin-top: auto;
+  margin-bottom: 0;
+}
+
+.meter-group {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  gap: 10px;
+  /* Reduced gap */
+}
+
+/* NEW: GPU Group specific styling */
+
+.gpu-group {
+  margin-top: 15px;
+  /* Space between CPU/RAM and GPU sections */
+  border-top: 1px dashed rgba(0, 192, 216, 0.05);
+  /* Subtle separator */
+  padding-top: 15px;
+}
+
+/* SemiSpeedometer specific overrides (to match the global style) */
+
+.semi-speedometer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  /* Smaller bottom margin */
+}
+
+.semi-speedometer-container .text-sm {
+  /* For the label */
+  font-size: 0.85rem;
+  /* Smaller label */
+  color: var(--color-text-muted);
+}
+
+.semi-speedometer-container .text-lg {
+  /* For the value */
+  font-size: 1.2rem;
+  /* Smaller value */
+  color: var(--color-accent-primary);
+  font-family: 'Orbitron', sans-serif;
+  text-shadow: 0 0 5px rgba(0, 192, 216, 0.3);
+}
+
+/* SVG Speedometer Styling */
+
+.semi-speedometer-container svg {
+  width: 120px;
+  /* Adjust SVG container size */
+  height: 60px;
+  /* Half height for arc */
+  overflow: visible;
+  /* Ensure stroke-linecap is visible */
+}
+
+/* Base arc background */
+
+.semi-speedometer-container path[stroke="#1e293b"] {
+  /* Targetting original default stroke color */
+  stroke: rgba(0, 192, 216, 0.15);
+  /* Muted background arc color */
+  stroke-width: 6px;
+  fill: none;
+  stroke-linecap: round;
+}
+
+/* Fill arc */
+
+.semi-speedometer-container path[stroke="#22d3ee"] {
+  /* Targetting original default stroke color */
+  stroke: var(--color-accent-primary);
+  /* Primary accent color for fill */
+  stroke-width: 6px;
+  fill: none;
+  strokeDasharray: circumference;
+  strokeDashoffset: circumference - progress;
+  strokeLinecap: round;
+  filter: drop-shadow(0 0 5px rgba(0, 192, 216, 0.8));
+  /* Glow on fill */
+}
+
+/* Specific colors for GPU gauges (overrides the default #22d3ee target) */
+
+.semi-speedometer-container.gpu-usage path[stroke="#22d3ee"] {
+  stroke: var(--color-gpu-accent);
+  filter: drop-shadow(0 0 5px var(--color-gpu-accent));
+}
+
+.semi-speedometer-container.gpu-temp path[stroke="#22d3ee"] {
+  stroke: var(--color-warning);
+  filter: drop-shadow(0 0 5px var(--color-warning));
+}
+
+/* SVG Text Markers */
+
+.semi-speedometer-container text {
+  fill: var(--color-text-muted);
+  font-size: 7px;
+  font-family: 'Roboto Mono', monospace;
+}
+
+/* Circular Progress for Storage */
+
+.circular-progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.circular-progress-container svg {
+  margin-bottom: 5px;
+}
+
+.circular-progress-container text {
+  font-family: 'Orbitron', sans-serif;
+  text-shadow: 0 0 5px rgba(0, 192, 216, 0.3);
+}
+
+.data-block-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* Reduced gap */
+  margin-bottom: 20px;
+}
+
+.data-block-group.side-by-side {
+  /* For CPU Temp and Network Flow */
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.data-block.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  /* Adjust padding for visual balance */
+}
+
+.data-block {
+  background: rgba(0, 192, 216, 0.03);
+  /* Very subtle background */
+  padding: 12px 18px;
+  /* Reduced padding */
+  border-radius: 8px;
+  /* Less rounded */
+  border: 1px solid rgba(0, 192, 216, 0.08);
+  /* Lighter border */
+  box-shadow: inset 0 0 4px rgba(0, 192, 216, 0.02);
+  transition: all 0.2s ease;
+  flex: 1;
+  /* Allow data blocks to grow within side-by-side group */
+  min-width: 0;
+  /* Prevent content overflow */
+}
+
+.data-block:hover {
+  border-color: rgba(0, 192, 216, 0.15);
+  background: rgba(0, 192, 216, 0.04);
+}
+
+.network-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 6px;
+  /* Reduced margin */
+  font-family: 'Roboto Mono', monospace;
+}
+
+.network-item {
+  font-size: 0.95em;
+  /* Slightly smaller */
+  color: var(--color-accent-primary);
+  text-shadow: 0 0 4px rgba(0, 192, 216, 0.2);
+  /* No margin-bottom here, as they are side-by-side now */
+}
+
+.temp-stat {
+  font-size: 1.1em;
+  /* Slightly smaller */
+  color: var(--color-critical);
+  /* Red for temp */
+  text-shadow: 0 0 5px rgba(255, 68, 68, 0.4);
+  margin-top: 6px;
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Action Button (Minimalist) */
+
+.action-button {
+  background: transparent;
+  border: 1px solid var(--color-accent-primary);
+  padding: 10px 25px;
+  /* Reduced padding */
+  border-radius: 18px;
+  /* Less rounded */
+  margin-top: auto;
+  /* Push to bottom */
+  font-size: 0.95em;
+  /* Slightly smaller */
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0, 192, 216, 0.25);
+  color: var(--color-accent-primary);
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  -webkit-app-region: no-drag;
+  /* Ensure buttons are clickable */
+}
+
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 192, 216, 0.1);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(0, 192, 216, 0.4);
+}
+
+.action-button:hover::before {
+  transform: scaleX(1);
+}
+
+.action-button.active {
+  background: rgba(0, 192, 216, 0.2);
+  box-shadow: 0 0 25px rgba(0, 192, 216, 0.7), 0 0 40px rgba(0, 192, 216, 0.3);
+  color: var(--color-text-light);
+  animation: boostPulse 1s infinite alternate;
+}
+
+@keyframes boostPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 25px rgba(0, 192, 216, 0.7);
+  }
+
+  100% {
+    transform: scale(1.005);
+    box-shadow: 0 0 30px rgba(0, 192, 216, 0.8);
+  }
+}
+
+.action-button.small {
+  padding: 6px 15px;
+  /* Even smaller */
+  font-size: 0.75em;
+  margin-top: 8px;
+  border-radius: 12px;
+  box-shadow: 0 0 6px rgba(0, 192, 216, 0.15);
+}
+
+.action-button.small:hover {
+  background: rgba(0, 192, 216, 0.03);
+  box-shadow: 0 0 10px rgba(0, 192, 216, 0.25);
+  transform: translateY(0);
+  /* No lift for small buttons */
+}
+
+/* AI Chat Panel (Minimalist) */
+
+.ai-chat-panel {
+  flex-grow: 1;
+}
+
+.chat-terminal {
+  background: rgba(0, 192, 216, 0.03);
+  /* Very subtle background */
+  padding: 18px;
+  /* Reduced padding */
+  height: calc(100% - 150px);
+  /* Adjusted height */
+  min-height: 200px;
+  overflow-y: auto;
+  margin: 12px 0;
+  /* Reduced margin */
+  border-radius: 8px;
+  /* Less rounded */
+  text-align: left;
+  font-size: 0.85em;
+  /* Slightly smaller */
+  border: 1px solid rgba(0, 192, 216, 0.08);
+  /* Lighter border */
+  box-shadow: inset 0 0 6px rgba(0, 192, 216, 0.02);
+  position: relative;
+  font-family: 'Roboto Mono', monospace;
+  line-height: 1.4;
+}
+
+.chat-terminal::-webkit-scrollbar {
+  width: 5px;
+}
+
+.chat-terminal::-webkit-scrollbar-track {
+  background: rgba(0, 192, 216, 0.03);
+  border-radius: 2px;
+}
+
+.chat-terminal::-webkit-scrollbar-thumb {
+  background: rgba(0, 192, 216, 0.15);
+  border-radius: 2px;
+}
+
+.chat-terminal::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 192, 216, 0.3);
+}
+
+.chat-terminal > div {
+  margin-bottom: 8px;
+  /* Reduced margin */
+  padding: 5px 8px;
+  /* Reduced padding */
+  border-radius: 5px;
+  /* Less rounded */
+  max-width: 98%;
+  word-wrap: break-word;
+}
+
+.chat-terminal > div b {
+  color: var(--color-accent-primary);
+  /* Use primary accent for names */
+  margin-right: 4px;
+  font-weight: 700;
+}
+
+.chat-terminal > div:nth-child(odd) {
+  /* User messages */
+  color: var(--color-text-light);
+  background: rgba(0, 192, 216, 0.06);
+  /* Subtle blue tint */
+  border-left: 2px solid var(--color-accent-primary);
+  margin-left: auto;
+}
+
+.chat-terminal > div:nth-child(even) {
+  /* AI messages */
+  color: var(--color-text-light);
+  background: rgba(0, 192, 216, 0.04);
+  /* Even more subtle tint */
+  border-left: 2px solid var(--color-accent-primary);
+}
+
+.chat-input-area {
+  display: flex;
+  margin-top: auto;
+  padding-top: 12px;
+  /* Reduced padding */
+  border-top: 1px solid rgba(0, 192, 216, 0.06);
+  /* Lighter separator */
+}
+
+.text-input {
+  flex-grow: 1;
+  padding: 10px 18px;
+  /* Reduced padding */
+  border-radius: 18px;
+  /* Less rounded */
+  border: 1px solid rgba(0, 192, 216, 0.15);
+  /* Lighter border */
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--color-text-light);
+  margin-right: 8px;
+  /* Reduced margin */
+  outline: none;
+  font-size: 0.9em;
+  font-family: 'Roboto Mono', monospace;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.15);
+}
+
+.text-input:focus {
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 8px rgba(0, 192, 216, 0.4), inset 0 0 6px rgba(0, 192, 216, 0.15);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.send-button {
+  padding: 10px 20px;
+  /* Reduced padding */
+  border-radius: 18px;
+  /* Less rounded */
+  border: 1px solid var(--color-accent-primary);
+  background: transparent;
+  color: var(--color-accent-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 6px rgba(0, 192, 216, 0.25);
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  /* Reduced gap */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  -webkit-app-region: no-drag;
+  /* Ensure buttons are clickable */
+}
+
+.send-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px rgba(0, 192, 216, 0.4);
+  background: rgba(0, 192, 216, 0.08);
+}
+
+.send-button .arrow {
+  font-size: 0.9em;
+  /* Smaller arrow */
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.send-button:hover .arrow {
+  transform: translateX(2px);
+}
+
+/* Desktop Panel Styles */
+
+.desktop-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Align icons to the top-left */
+  padding: 20px;
+  overflow-y: auto;
+  /* Enable scrolling for desktop icons if needed */
+  flex-wrap: wrap;
+  /* Allow icons to wrap */
+  align-content: flex-start;
+  /* Align wrapped lines to the start */
+  gap: 15px;
+  /* Space between icons */
+}
+
+.desktop-icons-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  /* Space between desktop icons */
+  margin-top: 20px;
+  width: 100%;
+}
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--color-text-light);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9em;
+  text-align: center;
+  width: 80px;
+  /* Fixed width for icons */
+  cursor: pointer;
+  transition: transform 0.2s ease, text-shadow 0.2s ease;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  /* Prevent text selection */
+}
+
+.desktop-icon:hover {
+  transform: translateY(-3px);
+  text-shadow: 0 0 8px rgba(0, 192, 216, 0.6);
+}
+
+.desktop-icon .icon {
+  font-size: 3em;
+  /* Larger icons */
+  margin-bottom: 8px;
+  color: var(--color-accent-primary);
+  filter: drop-shadow(0 0 5px rgba(0, 192, 216, 0.4));
+}
+
+.desktop-icon.ai-shortcut .icon {
+  color: var(--color-accent-secondary);
+  /* Amber for AI shortcuts */
+  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6));
+}
+
+.desktop-icon span:last-child {
+  /* Text part of the icon */
+  word-wrap: break-word;
+}
+
+.current-directory-view {
+  margin-top: 30px;
+  width: 100%;
+  background: rgba(0, 192, 216, 0.03);
+  border: 1px solid rgba(0, 192, 216, 0.08);
+  border-radius: 8px;
+  padding: 15px;
+  text-align: left;
+}
+
+.current-directory-view h3 {
+  margin-bottom: 15px;
+  color: var(--color-accent-primary);
+}
+
+.current-directory-view .file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  min-height: 80px;
+  overflow-y: auto;
+  padding-right: 5px;
+  border-radius: 6px;
+  background: rgba(0,192,216,0.02);
+  box-shadow: 0 1px 8px 0 rgba(0,192,216,0.04);
+}
+
+.current-directory-view .file-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.current-directory-view .file-list::-webkit-scrollbar-track {
+  background: rgba(0, 192, 216, 0.03);
+  border-radius: 2px;
+}
+
+.current-directory-view .file-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 192, 216, 0.15);
+  border-radius: 2px;
+}
+
+.current-directory-view .file-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 192, 216, 0.3);
+}
+
+.current-directory-view .file-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  background: rgba(0, 192, 216, 0.03);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 192, 216, 0.07);
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.95em;
+  color: var(--color-text-light);
+  margin-bottom: 3px;
+  box-shadow: 0 1px 4px 0 rgba(0,192,216,0.04);
+}
+
+.current-directory-view .file-item:hover {
+  background: rgba(0, 192, 216, 0.09);
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 2px 12px 0 rgba(0,192,216,0.10);
+}
+
+.current-directory-view .file-item .icon {
+  margin-right: 8px;
+  color: var(--color-accent-primary);
+  font-size: 1.2em;
+}
+
+.current-directory-view .action-button.small {
+  margin-top: 15px;
+  align-self: flex-start;
+  /* Align button to the left */
+}
