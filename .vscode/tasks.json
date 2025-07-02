@@ -1,0 +1,10 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"command": "npm install react-icons",
+			"label": "Install react-icons for icon support"
+		}
+	]
+}

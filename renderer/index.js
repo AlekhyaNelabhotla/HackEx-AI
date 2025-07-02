@@ -1,5 +1,18 @@
+
 const React = window.React;
 const ReactDOM = window.ReactDOM;
+// Import react-icons (FontAwesome)
+const { FaHome, FaDownload, FaFolder, FaFile, FaDesktop, FaRegFileAlt } = window.ReactIcons || {};
+
+// Helper: Directory icon by type/name
+function DirectoryIcon({ name, isDirectory }) {
+  if (!isDirectory) return FaFile ? React.createElement(FaFile, { className: "icon" }) : React.createElement("span", { className: "icon" }, "📄");
+  if (name.toLowerCase() === "home") return FaHome ? React.createElement(FaHome, { className: "icon" }) : React.createElement("span", { className: "icon" }, "🏠");
+  if (name.toLowerCase() === "downloads") return FaDownload ? React.createElement(FaDownload, { className: "icon" }) : React.createElement("span", { className: "icon" }, "📂");
+  if (name.toLowerCase() === "desktop") return FaDesktop ? React.createElement(FaDesktop, { className: "icon" }) : React.createElement("span", { className: "icon" }, "🖥️");
+  if (name.toLowerCase() === "documents") return FaRegFileAlt ? React.createElement(FaRegFileAlt, { className: "icon" }) : React.createElement("span", { className: "icon" }, "📄");
+  return FaFolder ? React.createElement(FaFolder, { className: "icon" }) : React.createElement("span", { className: "icon" }, "📁");
+}
 
 // Inlined and refined SemiSpeedometer component for direct use in index.js
 function SemiSpeedometer({ label, value, unit = "%", max = 100, accentColor = "#22d3ee", className = "" }) { // Added className prop
@@ -394,10 +407,14 @@ function App() {
                 React.createElement("div", { className: "panel desktop-panel" }, // Changed to desktop-panel
                     React.createElement("h2", null, "Data Core & Sessions"),
                     React.createElement("div", { className: "desktop-icons-container" },
-                        React.createElement("div", { className: "desktop-icon", onClick: handleGoToHome }, React.createElement("span", { className: "icon" }, "🏠"), "Home"),
-                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Downloads') }, React.createElement("span", { className: "icon" }, "📂"), "Downloads"),
-                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Documents') }, React.createElement("span", { className: "icon" }, "📄"), "Documents"),
-                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Desktop') }, React.createElement("span", { className: "icon" }, "🖥️"), "Desktop"),
+                        React.createElement("div", { className: "desktop-icon", onClick: handleGoToHome },
+                          FaHome ? React.createElement(FaHome, { className: "icon" }) : React.createElement("span", { className: "icon" }, "🏠"), "Home"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Downloads') },
+                          React.createElement(DirectoryIcon, { name: "downloads", isDirectory: true }), "Downloads"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Documents') },
+                          React.createElement(DirectoryIcon, { name: "documents", isDirectory: true }), "Documents"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Desktop') },
+                          React.createElement(DirectoryIcon, { name: "desktop", isDirectory: true }), "Desktop"),
                         React.createElement("div", { className: "desktop-icon ai-shortcut" }, React.createElement("span", { className: "icon" }, "🧠"), "Project X"),
                         React.createElement("div", { className: "desktop-icon ai-shortcut" }, React.createElement("span", { className: "icon" }, "🧠"), "Cleanup Routine")
                     ),
@@ -411,7 +428,7 @@ function App() {
                             fileSystemItems.length > 0 ? (
                                 fileSystemItems.map((item, index) => (
                                     React.createElement("div", { key: `${item.path}-${index}`, className: `file-item ${item.isDirectory ? 'folder' : 'file'}`, onClick: () => handleFileItemClick(item) },
-                                        React.createElement("span", { className: "icon" }, item.isDirectory ? "📁" : "📄"),
+                                        React.createElement(DirectoryIcon, { name: item.name, isDirectory: item.isDirectory }),
                                         item.name
                                     )
                                 ))
