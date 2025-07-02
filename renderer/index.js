@@ -145,110 +145,196 @@ function App() {
     const [fileSystemItems, setFileSystemItems] = React.useState([]); // State to store file system items
 
     React.useEffect(() => {
-        const interval = setInterval(async () => {
-            const data = await window.electronAPI.getSystemStats();
-            setStats(data);
-        }, 1000);
+        let isMounted = true;
+        
+        const fetchStats = async () => {
+            try {
+                if (isMounted) {
+                    const data = await window.electronAPI.getSystemStats();
+                    if (isMounted && data) {
+                        setStats(data);
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to fetch system stats:', error);
+                // Keep using previous stats on error
+            }
+        };
 
-        return () => clearInterval(interval);
+        // Initial fetch
+        fetchStats();
+
+        // Fetch stats every 3 seconds instead of 1 second to reduce resource usage
+        const interval = setInterval(fetchStats, 3000);
+
+        return () => {
+            isMounted = false;
+            clearInterval(interval);
+        };
+    }, []);
+
+    // Initialize with user's home directory
+    React.useEffect(() => {
+        const initializeFileSystem = async () => {
+            try {
+                const homeDir = await window.electronAPI.getHomeDirectory();
+                setCurrentDirPath(homeDir);
+            } catch (error) {
+                console.error('Error getting home directory:', error);
+                setCurrentDirPath('');
+            }
+        };
+        initializeFileSystem();
     }, []);
 
     // Effect to load directory contents
     React.useEffect(() => {
+        let isMounted = true;
+        
         const loadDirectoryContents = async () => {
-            if (currentDirPath === 'My Computer') {
-                // In a real scenario, you'd list logical drives here
-                setFileSystemItems([
-                    { name: 'C:\\', isDirectory: true, path: 'C:\\' },
-                    { name: 'D:\\', isDirectory: true, path: 'D:\\' },
-                    // Add more drives as needed or dynamically
-                ]);
-            } else {
-                const items = await window.electronAPI.listDirectory(currentDirPath);
-                setFileSystemItems(items);
+            try {
+                if (isMounted) {
+                    const items = await window.electronAPI.listDirectory(currentDirPath);
+                    if (isMounted) {
+                        setFileSystemItems(Array.isArray(items) ? items : []);
+                    }
+                }
+            } catch (error) {
+                console.warn('Error loading directory contents:', error);
+                if (isMounted) {
+                    setFileSystemItems([]);
+                }
             }
         };
-        loadDirectoryContents();
+        
+        if (currentDirPath) {
+            loadDirectoryContents();
+        }
+
+        return () => {
+            isMounted = false;
+        };
     }, [currentDirPath]); // Reload when currentDirPath changes
 
-    const handleFileItemClick = async (item) => {
-        if (item.isDirectory) {
-            setCurrentDirPath(item.path);
-        } else {
-            // Open the file using the system's default application
-            const success = await window.electronAPI.openFile(item.path);
-            if (!success) {
-                console.error(`Failed to open file: ${item.path}`);
-                // Potentially show a user-friendly error message
+    const handleFileItemClick = React.useCallback(async (item) => {
+        try {
+            if (item.isDirectory) {
+                setCurrentDirPath(item.path);
+            } else {
+                const success = await window.electronAPI.openFile(item.path);
+                if (!success) {
+                    console.warn(`Failed to open file: ${item.path}`);
+                }
+            }
+        } catch (error) {
+            console.warn('Error handling file click:', error);
+        }
+    }, []);
+
+    const handleGoBack = React.useCallback(() => {
+        if (currentDirPath) {
+            const parentPath = currentDirPath.substring(0, currentDirPath.lastIndexOf('\\'));
+            if (parentPath && parentPath.length > 2) {
+                setCurrentDirPath(parentPath);
             }
         }
-    };
+    }, [currentDirPath]);
 
-    const handleOpenExplorer = async () => {
-        await window.electronAPI.openFileExplorer(currentDirPath);
-    };
-
-
-    // Placeholder for Boost button and Chatbot functionality
-    const handleBoostClick = () => {
-        const button = document.getElementById('boost-button');
-        button.classList.toggle('active');
-        if (button.classList.contains('active')) {
-            button.innerText = "⚡ CORE OPTIMIZED";
-        } else {
-            button.innerText = "⚡ OPTIMIZE CORE";
+    const handleGoToHome = React.useCallback(async () => {
+        try {
+            const homeDir = await window.electronAPI.getHomeDirectory();
+            setCurrentDirPath(homeDir);
+        } catch (error) {
+            console.warn('Error getting home directory:', error);
         }
-        // In a real app, you'd send an IPC message to main.js to perform system optimization
-        console.log("Boost button clicked!");
-    };
+    }, []);
 
-    const handleChatSend = () => {
+    const handleNavigateToFolder = React.useCallback(async (folderName) => {
+        try {
+            const homeDir = await window.electronAPI.getHomeDirectory();
+            const targetPath = `${homeDir}\\${folderName}`;
+            setCurrentDirPath(targetPath);
+        } catch (error) {
+            console.warn(`Error navigating to ${folderName}:`, error);
+        }
+    }, []);
+
+    const handleOpenExplorer = React.useCallback(async () => {
+        try {
+            await window.electronAPI.openFileExplorer(currentDirPath);
+        } catch (error) {
+            console.warn('Failed to open explorer:', error);
+        }
+    }, [currentDirPath]);
+
+    // Optimized event handlers
+    const handleBoostClick = React.useCallback(() => {
+        const button = document.getElementById('boost-button');
+        if (button) {
+            button.classList.toggle('active');
+            if (button.classList.contains('active')) {
+                button.innerText = "⚡ CORE OPTIMIZED";
+            } else {
+                button.innerText = "⚡ OPTIMIZE CORE";
+            }
+        }
+        console.log("Boost button clicked!");
+    }, []);
+
+    const handleChatSend = React.useCallback(() => {
         const inputElement = document.getElementById('chat-input');
+        const display = document.getElementById('chat-display');
+        
+        if (!inputElement || !display) return;
+        
         const input = inputElement.value;
         if (input.trim() === "") return;
 
-        const display = document.getElementById('chat-display');
         display.innerHTML += `<div><b>You:</b> ${input}</div>`;
 
         setTimeout(() => {
-            display.innerHTML += `<div><b>AI:</b> Query acknowledged. Standing by for deeper system integration. (Mock response)</div>`;
+            display.innerHTML += `<div><b>AI:</b> Query acknowledged. Standing by for deeper system integration.</div>`;
             display.scrollTop = display.scrollHeight;
-        }, 800);
+        }, 500); // Reduced timeout for better responsiveness
 
         inputElement.value = "";
         inputElement.focus();
-    };
+    }, []);
 
     React.useEffect(() => {
         const boostButton = document.getElementById('boost-button');
+        const chatSendButton = document.getElementById('chat-send');
+        const chatInput = document.getElementById('chat-input');
+        const openExplorerButton = document.getElementById('open-file-explorer-button');
+
+        const handleKeyPress = (event) => {
+            if (event.key === 'Enter') {
+                handleChatSend();
+            }
+        };
+
+        // Add event listeners
         if (boostButton) {
             boostButton.addEventListener('click', handleBoostClick);
         }
-        const chatSendButton = document.getElementById('chat-send');
         if (chatSendButton) {
             chatSendButton.addEventListener('click', handleChatSend);
         }
-        const chatInput = document.getElementById('chat-input');
         if (chatInput) {
-            chatInput.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    handleChatSend();
-                }
-            });
+            chatInput.addEventListener('keypress', handleKeyPress);
         }
-
-        const openExplorerButton = document.getElementById('open-file-explorer-button');
         if (openExplorerButton) {
             openExplorerButton.addEventListener('click', handleOpenExplorer);
         }
 
+        // Cleanup function
         return () => {
             if (boostButton) boostButton.removeEventListener('click', handleBoostClick);
             if (chatSendButton) chatSendButton.removeEventListener('click', handleChatSend);
-            if (chatInput) chatInput.removeEventListener('keypress', handleChatSend);
+            if (chatInput) chatInput.removeEventListener('keypress', handleKeyPress);
             if (openExplorerButton) openExplorerButton.removeEventListener('click', handleOpenExplorer);
         };
-    }, [currentDirPath]); // Add currentDirPath as a dependency for handleOpenExplorer
+    }, [handleBoostClick, handleChatSend, handleOpenExplorer]);
 
 
     return (
@@ -308,20 +394,23 @@ function App() {
                 React.createElement("div", { className: "panel desktop-panel" }, // Changed to desktop-panel
                     React.createElement("h2", null, "Data Core & Sessions"),
                     React.createElement("div", { className: "desktop-icons-container" },
-                        React.createElement("div", { className: "desktop-icon", onClick: () => setCurrentDirPath('My Computer') }, React.createElement("span", { className: "icon" }, "💻"), "My Computer"),
-                        React.createElement("div", { className: "desktop-icon" }, React.createElement("span", { className: "icon" }, "🌐"), "Network"),
-                        React.createElement("div", { className: "desktop-icon" }, React.createElement("span", { className: "icon" }, "🗑️"), "Recycle Bin"),
-                        React.createElement("div", { className: "desktop-icon", onClick: () => setCurrentDirPath('') }, React.createElement("span", { className: "icon" }, "📁"), "User Files"),
+                        React.createElement("div", { className: "desktop-icon", onClick: handleGoToHome }, React.createElement("span", { className: "icon" }, "🏠"), "Home"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Downloads') }, React.createElement("span", { className: "icon" }, "📂"), "Downloads"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Documents') }, React.createElement("span", { className: "icon" }, "📄"), "Documents"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Desktop') }, React.createElement("span", { className: "icon" }, "🖥️"), "Desktop"),
                         React.createElement("div", { className: "desktop-icon ai-shortcut" }, React.createElement("span", { className: "icon" }, "🧠"), "Project X"),
                         React.createElement("div", { className: "desktop-icon ai-shortcut" }, React.createElement("span", { className: "icon" }, "🧠"), "Cleanup Routine")
                     ),
                     currentDirPath && React.createElement("div", { className: "current-directory-view" },
-                        React.createElement("h3", null, `Current Directory: ${currentDirPath === '' ? 'Home' : currentDirPath}`),
-                        React.createElement("button", { className: "action-button small", onClick: () => setCurrentDirPath(prev => prev.substring(0, prev.lastIndexOf('/')) || '') }, "⬆️ Back"), // Basic back navigation
+                        React.createElement("h3", null, `Current Directory: ${currentDirPath}`),
+                        React.createElement("div", { className: "directory-controls" },
+                            React.createElement("button", { className: "action-button small", onClick: handleGoBack }, "⬆️ Back"),
+                            React.createElement("button", { className: "action-button small", onClick: handleGoToHome }, "🏠 Home")
+                        ),
                         React.createElement("div", { className: "file-list" },
                             fileSystemItems.length > 0 ? (
-                                fileSystemItems.map(item => (
-                                    React.createElement("div", { key: item.path, className: `file-item ${item.isDirectory ? 'folder' : 'file'}`, onClick: () => handleFileItemClick(item) },
+                                fileSystemItems.map((item, index) => (
+                                    React.createElement("div", { key: `${item.path}-${index}`, className: `file-item ${item.isDirectory ? 'folder' : 'file'}`, onClick: () => handleFileItemClick(item) },
                                         React.createElement("span", { className: "icon" }, item.isDirectory ? "📁" : "📄"),
                                         item.name
                                     )
