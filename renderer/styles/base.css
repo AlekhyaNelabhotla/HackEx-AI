@@ -1,0 +1,51 @@
+/* Importing fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap');
+
+/* Tailwind CSS imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables for Minimalist Palette */
+:root {
+  --color-background-deep: #23272E; /* Charcoal gray */
+  --color-background-panel: rgba(255, 255, 255, 0.07); /* Soft white glass */
+  --color-border-subtle: rgba(60, 60, 60, 0.13); /* Subtle dark border */
+  --color-accent-primary: #5ee6ff; /* Lighter blue for main speedometer */
+  --color-speedo-bg: #26313a; /* Muted dark for speedometer/circle background */
+  --color-accent-secondary: rgba(0, 204, 153, 0.18); /* Mint for AI highlights */
+  --color-text-light: #F9FAFB;
+  --color-text-muted: #B0B8C1;
+  --color-warning: #FFD166; /* Soft yellow for warnings (GPU temp) */
+  --color-critical: #EF476F; /* Pinkish red for critical (CPU temp) */
+  --color-gpu-accent: #7A8B94; /* Even less saturated, dimmer blue for GPU-specific elements */
+}
+
+html, body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrollbars on body */
+}
+
+body {
+  background-color: var(--color-background-deep);
+  color: var(--color-text-light);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Responsive panel widths - ONLY for smaller screens */
+@media (max-width: 1800px) {
+  .system-stats-panel,
+  .desktop-panel,
+  .ai-chat-panel {
+    width: 100%;
+    max-width: min(90vw, 1200px);
+    height: auto;
+    min-height: clamp(400px, 50vh, 600px);
+    flex-shrink: 0;
+  }
+}

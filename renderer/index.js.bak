@@ -1,0 +1,605 @@
+// Add this for TypeScript to recognize electronAPI on window
+/**
+ * @typedef {{
+ *   getSystemStats: () => Promise<any>,
+ *   getHomeDirectory: () => Promise<string>,
+ *   listDirectory: (path: string) => Promise<any[]>,
+ *   openFile: (path: string) => Promise<boolean>,
+ *   openFileExplorer: (path: string) => Promise<void>,
+ *   closeWindow: () => void
+ * }} ElectronAPI
+ */
+
+/**
+ * @type {Window & typeof globalThis & { electronAPI?: ElectronAPI }}
+ */
+const win = window;
+
+const React = window.React;
+const ReactDOM = window.ReactDOM;
+// Import react-icons (FontAwesome)
+// Make sure we have fallbacks for all icons in case they don't load
+const ReactIcons = window.ReactIcons || {};
+const FaHome = ReactIcons.FaHome || (() => React.createElement("span", null, "🏠"));
+const FaDownload = ReactIcons.FaDownload || (() => React.createElement("span", null, "📥"));
+const FaFolder = ReactIcons.FaFolder || (() => React.createElement("span", null, "📁"));
+const FaFile = ReactIcons.FaFile || (() => React.createElement("span", null, "📄"));
+const FaDesktop = ReactIcons.FaDesktop || (() => React.createElement("span", null, "🖥️"));
+const FaRegFileAlt = ReactIcons.FaRegFileAlt || (() => React.createElement("span", null, "📄"));
+const FaMusic = ReactIcons.FaMusic || (() => React.createElement("span", null, "🎵"));
+const FaVideo = ReactIcons.FaVideo || (() => React.createElement("span", null, "🎬"));
+const FaImage = ReactIcons.FaImage || (() => React.createElement("span", null, "🖼️"));
+const FaFilePdf = ReactIcons.FaFilePdf || (() => React.createElement("span", null, "📕"));
+const FaFileWord = ReactIcons.FaFileWord || (() => React.createElement("span", null, "📘"));
+const FaFileExcel = ReactIcons.FaFileExcel || (() => React.createElement("span", null, "📊"));
+const FaFilePowerpoint = ReactIcons.FaFilePowerpoint || (() => React.createElement("span", null, "📙"));
+const FaFileCode = ReactIcons.FaFileCode || (() => React.createElement("span", null, "💻"));
+const FaFileArchive = ReactIcons.FaFileArchive || (() => React.createElement("span", null, "📦"));
+const FaFileAudio = ReactIcons.FaFileAudio || (() => React.createElement("span", null, "🔊"));
+const FaFileVideo = ReactIcons.FaFileVideo || (() => React.createElement("span", null, "📹"));
+const FaSearch = ReactIcons.FaSearch || (() => React.createElement("span", null, "🔍"));
+
+// Helper: File type detection
+function getFileType(filename) {
+    const ext = filename.toLowerCase().split('.').pop();
+    const audioExts = ['mp3', 'wav', 'flac', 'aac', 'm4a', 'ogg', 'wma'];
+    const videoExts = ['mp4', 'avi', 'mkv', 'mov', 'wmv', 'flv', 'm4v', 'webm'];
+    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'svg', 'webp'];
+    const codeExts = ['js', 'ts', 'html', 'css', 'py', 'java', 'cpp', 'c', 'cs', 'php', 'rb', 'go', 'rs'];
+    const archiveExts = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2'];
+    
+    if (audioExts.includes(ext)) return 'audio';
+    if (videoExts.includes(ext)) return 'video';
+    if (imageExts.includes(ext)) return 'image';
+    if (ext === 'pdf') return 'pdf';
+    if (['doc', 'docx'].includes(ext)) return 'word';
+    if (['xls', 'xlsx'].includes(ext)) return 'excel';
+    if (['ppt', 'pptx'].includes(ext)) return 'powerpoint';
+    if (codeExts.includes(ext)) return 'code';
+    if (archiveExts.includes(ext)) return 'archive';
+    return 'file';
+}
+
+// Helper: Directory and file icon with enhanced file type support
+function Icon({ name, isDirectory }) {
+    if (isDirectory) {
+        // Special folder types
+        if (name.toLowerCase() === "home") return FaHome ? React.createElement(FaHome, { className: "icon" }) : React.createElement("span", { className: "icon" }, "🏠");
+        if (name.toLowerCase() === "downloads") return FaDownload ? React.createElement(FaDownload, { className: "icon" }) : React.createElement("span", { className: "icon" }, "📥");
+        if (name.toLowerCase() === "desktop") return FaDesktop ? React.createElement(FaDesktop, { className: "icon" }) : React.createElement("span", { className: "icon" }, "🖥️");
+        if (name.toLowerCase() === "documents") return FaRegFileAlt ? React.createElement(FaRegFileAlt, { className: "icon" }) : React.createElement("span", { className: "icon" }, "📄");
+        if (name.toLowerCase() === "music") return FaMusic ? React.createElement(FaMusic, { className: "icon" }) : React.createElement("span", { className: "icon" }, "🎵");
+        if (name.toLowerCase() === "videos") return FaVideo ? React.createElement(FaVideo, { className: "icon" }) : React.createElement("span", { className: "icon" }, "🎬");
+        if (name.toLowerCase() === "pictures") return FaImage ? React.createElement(FaImage, { className: "icon" }) : React.createElement("span", { className: "icon" }, "🖼️");
+        // Default folder
+        return FaFolder ? React.createElement(FaFolder, { className: "icon" }) : React.createElement("span", { className: "icon" }, "📁");
+    }
+    
+    // File type icons
+    const fileType = getFileType(name);
+    switch (fileType) {
+        case 'audio':
+            return FaFileAudio ? React.createElement(FaFileAudio, { className: "icon file-audio" }) : React.createElement("span", { className: "icon" }, "🎵");
+        case 'video':
+            return FaFileVideo ? React.createElement(FaFileVideo, { className: "icon file-video" }) : React.createElement("span", { className: "icon" }, "🎬");
+        case 'image':
+            return FaImage ? React.createElement(FaImage, { className: "icon file-image" }) : React.createElement("span", { className: "icon" }, "🖼️");
+        case 'pdf':
+            return FaFilePdf ? React.createElement(FaFilePdf, { className: "icon file-pdf" }) : React.createElement("span", { className: "icon" }, "📄");
+        case 'word':
+            return FaFileWord ? React.createElement(FaFileWord, { className: "icon file-word" }) : React.createElement("span", { className: "icon" }, "📝");
+        case 'excel':
+            return FaFileExcel ? React.createElement(FaFileExcel, { className: "icon file-excel" }) : React.createElement("span", { className: "icon" }, "📊");
+        case 'powerpoint':
+            return FaFilePowerpoint ? React.createElement(FaFilePowerpoint, { className: "icon file-powerpoint" }) : React.createElement("span", { className: "icon" }, "📽️");
+        case 'code':
+            return FaFileCode ? React.createElement(FaFileCode, { className: "icon file-code" }) : React.createElement("span", { className: "icon" }, "💻");
+        case 'archive':
+            return FaFileArchive ? React.createElement(FaFileArchive, { className: "icon file-archive" }) : React.createElement("span", { className: "icon" }, "📦");
+        default:
+            return FaFile ? React.createElement(FaFile, { className: "icon" }) : React.createElement("span", { className: "icon" }, "📄");
+    }
+}
+
+// SemiSpeedometer component for direct use in index.js
+function SemiSpeedometer({ label, value, unit = "%", max = 100, accentColor = "#22d3ee", className = "" }) {
+    const radius = 45;
+    const circumference = Math.PI * radius; // Arc length of a semi-circle
+
+    // Normalize value to 0-100% for the progress calculation relative to 'max'
+    const normalizedValue = (value / max) * 100;
+    const progress = Math.min(Math.max(normalizedValue, 0), 100) / 100 * circumference;
+
+    return (
+        React.createElement("div", { className: `semi-speedometer-container ${className}` },
+            React.createElement("svg", { className: "w-36 h-18", viewBox: "0 0 100 50" },
+                // Background Arc
+                React.createElement("path", {
+                    d: "M 5 50 A 45 45 0 0 1 95 50", // Half circle arc
+                    stroke: "#1e293b", // Hardcoded color to match CSS targeting. CSS will override.
+                    strokeWidth: "8",
+                    fill: "none",
+                    strokeLinecap: "round"
+                }),
+                // Fill Arc
+                React.createElement("path", {
+                    d: "M 5 50 A 45 45 0 0 1 95 50", // Same arc for fill
+                    stroke: accentColor, // Passed dynamic accent color
+                    strokeWidth: "8",
+                    fill: "none",
+                    strokeDasharray: circumference,
+                    strokeDashoffset: circumference - progress,
+                    strokeLinecap: "round",
+                    style: { transition: 'stroke-dashoffset 0.5s ease-out' }
+                }),
+                // Markers (Text labels at 0, 50, 100, or custom for temp)
+                // These are dynamically positioned for a 180-degree arc
+                // 0% (left)
+                React.createElement("text", { x: "5", y: "48", textAnchor: "middle", fill: "#B0B0B0", fontSize: "7", fontFamily: "Roboto Mono" }, "0"),
+                // 50% (top, or mid-range for custom max)
+                React.createElement("text", { x: "50", y: "8", textAnchor: "middle", fill: "#B0B0B0", fontSize: "7", fontFamily: "Roboto Mono" }, `${max === 100 ? "50" : (max / 2)}`),
+                // 100% (right, or max for custom max)
+                React.createElement("text", { x: "95", y: "48", textAnchor: "middle", fill: "#B0B0B0", fontSize: "7", fontFamily: "Roboto Mono" }, `${max}`)
+            ),
+            React.createElement("p", { className: "mt-1 text-sm" }, `${label}`),
+            React.createElement("p", { className: "text-lg font-bold" }, `${value}${unit}`)
+        )
+    );
+}
+
+// CircularProgress component for storage usage
+function CircularProgress({ value, label, size = 100, strokeWidth = 10, accentColor = "#22d3ee" }) {
+    const radius = (size / 2) - (strokeWidth / 2);
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (value / 100) * circumference;
+
+    return (
+        React.createElement("div", { className: "circular-progress-container" },
+            React.createElement("svg", { width: size, height: size, viewBox: `0 0 ${size} ${size}` },
+                React.createElement("circle", {
+                    stroke: "#1e293b", // Background circle
+                    fill: "transparent",
+                    strokeWidth: strokeWidth,
+                    r: radius,
+                    cx: size / 2,
+                    cy: size / 2,
+                }),
+                React.createElement("circle", {
+                    stroke: accentColor, // Progress circle
+                    fill: "transparent",
+                    strokeWidth: strokeWidth,
+                    strokeDasharray: circumference,
+                    strokeDashoffset: offset,
+                    strokeLinecap: "round",
+                    r: radius,
+                    cx: size / 2,
+                    cy: size / 2,
+                    style: { transition: 'stroke-dashoffset 0.5s ease-out' },
+                    transform: `rotate(-90 ${size / 2} ${size / 2})` // Start from top
+                }),
+                React.createElement("text", {
+                    x: "50%",
+                    y: "50%",
+                    dy: ".3em", // Adjust text vertical alignment
+                    textAnchor: "middle",
+                    className: "text-lg font-bold",
+                    fill: "var(--color-accent-primary)" // Use CSS variable
+                }, `${value}%`)
+            ),
+            React.createElement("p", { className: "mt-1 text-sm" }, label)
+        )
+    );
+}
+
+// Helper function for dynamic unit conversion for network speed
+function formatNetworkSpeed(bytesPerSecond) {
+    const kbps = bytesPerSecond / 1024;
+    if (kbps < 1000) { // Less than 1 MB/s
+        return `${kbps.toFixed(2)} KB/s`;
+    } else if (kbps < 1000 * 1000) { // Less than 1 GB/s
+        return `${(kbps / 1024).toFixed(2)} MB/s`;
+    } else {
+        return `${(kbps / (1024 * 1024)).toFixed(2)} GB/s`;
+    }
+}
+
+// Function to format Uptime
+const formatUptime = (seconds) => {
+    const d = Math.floor(seconds / (3600 * 24));
+    const h = Math.floor((seconds % (3600 * 24)) / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+    let parts = [];
+    if (d > 0) parts.push(`${d}d`);
+    if (h > 0 || d > 0) parts.push(`${h}h`);
+    if (m > 0 || h > 0 || d > 0) parts.push(`${m}m`);
+    parts.push(`${s}s`);
+    return parts.join(' ');
+};
+
+function TopBar() {
+    const handleClose = () => {
+        window.electronAPI?.closeWindow();
+    };
+
+    return (
+        React.createElement("div", {
+            className: "header-container", // Apply drag region here
+        },
+            React.createElement("h1", { style: { WebkitAppRegion: "no-drag" } }, // Text is not draggable
+                React.createElement("span", { className: "main-title" }, "HackexAI"),
+                " ",
+                React.createElement("span", { className: "subtitle" }, "∞ Core Interface ∞")
+            ),
+            React.createElement("button", { className: "close-button", onClick: handleClose }, "X")
+        )
+    );
+}
+
+function App() {
+    const [stats, setStats] = React.useState({
+        cpu: 0, ram: 0, storage: 0, rx_sec: 0, tx_sec: 0, gpu: 0, gpu_temp: 0, cpu_temp: 0, uptime: 0, processes: 0
+    });
+    const [currentDirPath, setCurrentDirPath] = React.useState(''); // State to track current directory path
+    const [fileSystemItems, setFileSystemItems] = React.useState([]); // State to store file system items
+    const [searchQuery, setSearchQuery] = React.useState(''); // State for file search
+
+    React.useEffect(() => {
+        let isMounted = true;
+        
+        const fetchStats = async () => {
+            try {
+                if (isMounted) {
+                    const data = await window.electronAPI?.getSystemStats();
+                    if (isMounted && data) {
+                        setStats(data);
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to fetch system stats:', error);
+                // Keep using previous stats on error
+            }
+        };
+
+        // Initial fetch
+        fetchStats();
+
+        // Fetch stats every 3 seconds instead of 1 second to reduce resource usage
+        const interval = setInterval(fetchStats, 3000);
+
+        return () => {
+            isMounted = false;
+            clearInterval(interval);
+        };
+    }, []);
+
+    // Initialize with user's home directory
+    React.useEffect(() => {
+        const initializeFileSystem = async () => {
+            try {
+                const homeDir = await window.electronAPI?.getHomeDirectory();
+                setCurrentDirPath(homeDir);
+            } catch (error) {
+                console.error('Error getting home directory:', error);
+                setCurrentDirPath('');
+            }
+        };
+        initializeFileSystem();
+    }, []);
+
+    // Effect to load directory contents
+    React.useEffect(() => {
+        let isMounted = true;
+        
+        const loadDirectoryContents = async () => {
+            try {
+                if (isMounted && currentDirPath) {
+                    console.log('Loading directory:', currentDirPath); // Debug
+                    const items = await window.electronAPI?.listDirectory(currentDirPath);
+                    console.log('Directory items received:', items); // Debug
+                    if (isMounted) {
+                        setFileSystemItems(Array.isArray(items) ? items : []);
+                    }
+                }
+            } catch (error) {
+                console.warn('Error loading directory contents:', error);
+                if (isMounted) {
+                    setFileSystemItems([]);
+                }
+            }
+        };
+        
+        if (currentDirPath) {
+            loadDirectoryContents();
+        } else {
+            // Clear files when no directory is selected
+            setFileSystemItems([]);
+        }
+
+        return () => {
+            isMounted = false;
+        };
+    }, [currentDirPath]); // Reload when currentDirPath changes
+
+    const handleFileItemClick = React.useCallback(async (item) => {
+        try {
+            if (item.isDirectory) {
+                setCurrentDirPath(item.path);
+            } else {
+                const success = await window.electronAPI?.openFile(item.path);
+                if (!success) {
+                    console.warn(`Failed to open file: ${item.path}`);
+                }
+            }
+        } catch (error) {
+            console.warn('Error handling file click:', error);
+        }
+    }, []);
+
+    const handleGoBack = React.useCallback(() => {
+        if (currentDirPath) {
+            // Use Windows backslash for path parsing
+            const parentPath = currentDirPath.substring(0, currentDirPath.lastIndexOf('\\'));
+            if (parentPath && parentPath.length > 2) { // C:\ minimum
+                setCurrentDirPath(parentPath);
+            }
+        }
+    }, [currentDirPath]);
+
+    const handleGoToHome = React.useCallback(async () => {
+        try {
+            const homeDir = await window.electronAPI.getHomeDirectory();
+            setCurrentDirPath(homeDir);
+        } catch (error) {
+            console.warn('Error getting home directory:', error);
+        }
+    }, []);
+
+    const handleNavigateToFolder = React.useCallback(async (folderName) => {
+        try {
+            // Get home directory
+            const homeDir = await window.electronAPI.getHomeDirectory();
+            console.log(`Home directory: ${homeDir}`);
+            console.log(`Navigating to folder: ${folderName}`);
+            
+            // Special paths for Windows standard folders
+            let targetPath;
+            if (folderName === 'Music' || folderName === 'Videos' || folderName === 'Pictures' || 
+                folderName === 'Documents' || folderName === 'Downloads' || folderName === 'Desktop') {
+                targetPath = `${homeDir}\\${folderName}`;
+            } else {
+                targetPath = folderName; // Use absolute path if provided
+            }
+            
+            console.log(`Target path: ${targetPath}`);
+            
+            // Set the path and let the effect load the directory
+            setCurrentDirPath(targetPath);
+            
+        } catch (error) {
+            console.warn(`Error navigating to ${folderName}:`, error);
+        }
+    }, []);
+
+    const handleOpenExplorer = React.useCallback(async () => {
+        try {
+            await window.electronAPI?.openFileExplorer(currentDirPath);
+        } catch (error) {
+            console.warn('Failed to open explorer:', error);
+        }
+    }, [currentDirPath]);
+
+    // Optimized event handlers
+    const handleBoostClick = React.useCallback(() => {
+        const button = document.getElementById('boost-button');
+        if (button) {
+            button.classList.toggle('active');
+            if (button.classList.contains('active')) {
+                button.innerText = "⚡ CORE OPTIMIZED";
+            } else {
+                button.innerText = "⚡ OPTIMIZE CORE";
+            }
+        }
+        console.log("Boost button clicked!");
+    }, []);
+
+    const handleChatSend = React.useCallback(() => {
+        const inputElement = document.getElementById('chat-input');
+        const display = document.getElementById('chat-display');
+        
+        if (!inputElement || !display) return;
+        
+        const input = inputElement.value;
+        if (input.trim() === "") return;
+
+        display.innerHTML += `<div><b>You:</b> ${input}</div>`;
+
+        setTimeout(() => {
+            display.innerHTML += `<div><b>AI:</b> Query acknowledged. Standing by for deeper system integration.</div>`;
+            display.scrollTop = display.scrollHeight;
+        }, 500); // Reduced timeout for better responsiveness
+
+        inputElement.value = "";
+        inputElement.focus();
+    }, []);
+
+    // Search functionality
+    const handleSearchChange = React.useCallback((e) => {
+        setSearchQuery(e.target.value);
+    }, []);
+
+    // Filter files based on search query
+    const filteredFileSystemItems = React.useMemo(() => {
+        if (!searchQuery.trim()) {
+            return fileSystemItems;
+        }
+        return fileSystemItems.filter(item => 
+            item.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [fileSystemItems, searchQuery]);
+
+    React.useEffect(() => {
+        const boostButton = document.getElementById('boost-button');
+        const chatSendButton = document.getElementById('chat-send');
+        const chatInput = document.getElementById('chat-input');
+        const openExplorerButton = document.getElementById('open-file-explorer-button');
+
+        const handleKeyPress = (event) => {
+            if (event.key === 'Enter') {
+                handleChatSend();
+            }
+        };
+
+        // Add event listeners
+        if (boostButton) {
+            boostButton.addEventListener('click', handleBoostClick);
+        }
+        if (chatSendButton) {
+            chatSendButton.addEventListener('click', handleChatSend);
+        }
+        if (chatInput) {
+            chatInput.addEventListener('keypress', handleKeyPress);
+        }
+        if (openExplorerButton) {
+            openExplorerButton.addEventListener('click', handleOpenExplorer);
+        }
+
+        // Cleanup function
+        return () => {
+            if (boostButton) boostButton.removeEventListener('click', handleBoostClick);
+            if (chatSendButton) chatSendButton.removeEventListener('click', handleChatSend);
+            if (chatInput) chatInput.removeEventListener('keypress', handleKeyPress);
+            if (openExplorerButton) openExplorerButton.removeEventListener('click', handleOpenExplorer);
+        };
+    }, [handleBoostClick, handleChatSend, handleOpenExplorer]);
+
+
+    return (
+        React.createElement("div", { className: "w-screen h-screen bg-black text-white flex flex-col" },
+            React.createElement(TopBar),
+            React.createElement("div", { className: "app-container" },
+                // System Stats Panel (Left)
+                React.createElement("div", { className: "panel system-stats-panel" },
+                    // CPU & RAM first
+                    React.createElement("div", { className: "meter-group" },
+                        React.createElement(SemiSpeedometer, { label: "CPU Load", value: stats.cpu, unit: "%", max: 100, accentColor: "var(--color-accent-primary)" }),
+                        React.createElement(SemiSpeedometer, { label: "RAM Usage", value: stats.ram, unit: "%", max: 100, accentColor: "var(--color-accent-primary)" })
+                    ),
+
+                    // GPU Load & Temp
+                    React.createElement("div", { className: "meter-group gpu-group" },
+                        React.createElement(SemiSpeedometer, { label: "GPU Load", value: stats.gpu, unit: "%", max: 100, accentColor: "var(--color-gpu-accent)", className: "gpu-usage" }),
+                        React.createElement(SemiSpeedometer, { label: "GPU Temp", value: stats.gpu_temp, unit: "°C", max: 120, accentColor: "var(--color-warning)", className: "gpu-temp" })
+                    ),
+
+                    // Storage below
+                    React.createElement("div", { className: "data-block-group" },
+                        React.createElement("div", { className: "data-block flex-center" },
+                            React.createElement(CircularProgress, { label: "Storage Used", value: stats.storage, size: 80, strokeWidth: 8, accentColor: "var(--color-accent-primary)" })
+                        )
+                    ),
+
+                    // Network below storage
+                    React.createElement("div", { className: "data-block" },
+                        React.createElement("h3", null, "Network Flow"),
+                        React.createElement("div", { className: "network-stats" },
+                            React.createElement("div", { id: "download-text", className: "network-item" }, `${formatNetworkSpeed(stats.rx_sec)} ↓`),
+                            React.createElement("div", { id: "upload-text", className: "network-item" }, `${formatNetworkSpeed(stats.tx_sec)} ↑`)
+                        )
+                    ),
+
+                    // CPU Temp below network
+                    React.createElement("div", { className: "data-block" },
+                        React.createElement("h3", null, "CPU Temp"),
+                        React.createElement("div", { id: "temp-text", className: "temp-stat" }, `${stats.cpu_temp}°C`)
+                    ),
+
+                    // Uptime & Processes
+                    React.createElement("div", { className: "data-block" },
+                        React.createElement("h3", null, "System Info"),
+                        React.createElement("p", null, "Uptime: ", React.createElement("span", { id: "uptime-text" }, formatUptime(stats.uptime))),
+                        React.createElement("p", null, "Processes: ", React.createElement("span", { id: "processes-text" }, stats.processes))
+                    ),
+
+                    // Boost Button
+                    React.createElement("button", { id: "boost-button", className: "action-button" }, "⚡ OPTIMIZE CORE")
+                ),
+                
+                // File System Panel (Middle)
+                React.createElement("div", { className: "panel desktop-panel", style: { width: '950px', minWidth: '950px' } },
+                    React.createElement("h2", null, "Data Core & Sessions"),
+                    React.createElement("div", { className: "desktop-icons-container" },
+                        React.createElement("div", { className: "desktop-icon", onClick: handleGoToHome },
+                          FaHome ? React.createElement(FaHome, { className: "icon" }) : React.createElement("span", { className: "icon" }, "🏠"), "Home"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Downloads') },
+                          React.createElement(Icon, { name: "downloads", isDirectory: true }), "Downloads"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Documents') },
+                          React.createElement(Icon, { name: "documents", isDirectory: true }), "Documents"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Desktop') },
+                          React.createElement(Icon, { name: "desktop", isDirectory: true }), "Desktop"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Music') },
+                          React.createElement(Icon, { name: "music", isDirectory: true }), "Music"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Videos') },
+                          React.createElement(Icon, { name: "videos", isDirectory: true }), "Videos"),
+                        React.createElement("div", { className: "desktop-icon", onClick: () => handleNavigateToFolder('Pictures') },
+                          React.createElement(Icon, { name: "pictures", isDirectory: true }), "Pictures")
+                    ),
+                    currentDirPath && React.createElement("div", { className: "current-directory-view" },
+                        React.createElement("h3", null, `Current Directory: ${currentDirPath}`),
+                        React.createElement("div", { className: "directory-controls" },
+                            React.createElement("button", { className: "action-button small", onClick: handleGoBack }, "⬆️ Back"),
+                            React.createElement("button", { className: "action-button small", onClick: handleGoToHome }, "🏠 Home")
+                        ),
+                        React.createElement("div", { className: "search-bar-container" },
+                            React.createElement("div", { className: "search-input-wrapper" },
+                                FaSearch ? React.createElement(FaSearch, { className: "search-icon" }) : React.createElement("span", { className: "search-icon" }, "🔍"),
+                                React.createElement("input", { 
+                                    type: "text", 
+                                    placeholder: "Search files and folders...", 
+                                    value: searchQuery,
+                                    onChange: handleSearchChange,
+                                    className: "search-input" 
+                                })
+                            )
+                        ),
+                        React.createElement("div", { className: "file-list" },
+                            filteredFileSystemItems.length > 0 ? (
+                                filteredFileSystemItems.map((item, index) => (
+                                    React.createElement("div", { key: `${item.path}-${index}`, className: `file-item ${item.isDirectory ? 'folder' : 'file'}`, onClick: () => handleFileItemClick(item) },
+                                        React.createElement(Icon, { name: item.name, isDirectory: item.isDirectory }),
+                                        React.createElement("span", { className: "file-name" }, item.name)
+                                    )
+                                ))
+                            ) : (
+                                React.createElement("p", { className: "empty-message" }, 
+                                    searchQuery ? `No files found matching "${searchQuery}"` : "Directory is empty or inaccessible."
+                                )
+                            )
+                        ),
+                        React.createElement("button", { id: "open-file-explorer-button", className: "action-button small" }, "Open File Explorer")
+                    )
+                ),
+
+                // AI Chat Panel (Right)
+                React.createElement(ChatPanel, {
+                    handleChatSend: handleChatSend
+                })
+            )
+        )
+    );
+}
+
+// Dummy ChatPanel component to avoid errors if not defined elsewhere
+function ChatPanel({ handleChatSend }) {
+    return React.createElement("div", { className: "panel chat-panel" },
+        React.createElement("h2", null, "AI Chat"),
+        React.createElement("div", { id: "chat-display", className: "chat-display" }),
+        React.createElement("div", { className: "chat-input-row" },
+            React.createElement("input", { id: "chat-input", className: "chat-input", type: "text", placeholder: "Type your message..." }),
+            React.createElement("button", { id: "chat-send", className: "action-button", onClick: handleChatSend }, "Send")
+        )
+    );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(React.createElement(App));

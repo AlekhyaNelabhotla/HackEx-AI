@@ -1,0 +1,26 @@
+/* Main styles file - imports all component styles */
+
+/* Import base styles */
+@import './styles/base.css';
+
+/* Import component-specific styles */
+@import './styles/topbar.css';
+@import './styles/filesystem.css';
+@import './styles/systemstats.css';
+@import './styles/chatpanel.css';
+
+/* App container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 2rem;
+  overflow-x: hidden;
+}
+
+.main-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}

@@ -1,0 +1,82 @@
+/* TopBar component styles */
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-background-panel);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.app-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-title span {
+  color: var(--color-text-light);
+}
+
+.app-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.app-control-button {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.app-control-button:hover {
+  color: var(--color-text-light);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-background-deep);
+}
+
+.user-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  color: var(--color-text-light);
+}
+
+.user-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #4CAF50;
+}

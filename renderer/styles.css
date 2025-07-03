@@ -6,8 +6,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS Variables for Minimalist Palette */
+/* Component styles will be imported here once setup */
+/* @import './styles/base.css';
+@import './styles/topbar.css';
+@import './styles/filesystem.css';
+@import './styles/systemstats.css';
+@import './styles/chatpanel.css'; */
 
+/* Custom CSS Variables for Minimalist Palette */
 :root {
   --color-background-deep: #23272E; /* Charcoal gray */
   --color-background-panel: rgba(255, 255, 255, 0.07); /* Soft white glass */
@@ -20,14 +26,20 @@
   --color-warning: #FFD166; /* Soft yellow for warnings (GPU temp) */
   --color-critical: #EF476F; /* Pinkish red for critical (CPU temp) */
   --color-gpu-accent: #7A8B94; /* Even less saturated, dimmer blue for GPU-specific elements */
+  --color-bg-primary: #2c2f33; /* Slightly lighter than deep background */
+  --color-bg-secondary: #23272e; /* Same as deep background for consistency */
+  --color-border: rgba(255, 255, 255, 0.1); /* Light border for context menu */
+  --color-error: #ff5c5c; /* Bright red for error messages */
+  --font-primary: 'Rajdhani', sans-serif;
+  --font-mono: 'Roboto Mono', monospace;
 }
 
-
 html, body {
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   margin: 0;
   padding: 0;
+  overflow: hidden; /* Prevent scrollbars on body */
 }
 
 body {
@@ -35,12 +47,12 @@ body {
   color: var(--color-text-light);
   font-family: 'Rajdhani', sans-serif;
   text-align: center;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
   position: relative;
+  min-width: 320px; /* Minimum mobile width */
 }
 
 /* Subtle background grid/noise */
@@ -73,31 +85,28 @@ body::before {
 
 .header-container {
   /* This container will serve as the draggable area at the top */
-  padding-top: 12px;
-  padding-bottom: 18px;
+  padding: clamp(8px, 1vh, 16px) 0 clamp(12px, 1.5vh, 20px) 0;
   -webkit-app-region: drag;
   user-select: none;
   position: relative;
+  flex-shrink: 0;
 }
 
 h1 {
   font-family: 'Orbitron', sans-serif;
-  font-size: 2.3em;
+  font-size: clamp(1.5rem, 3.5vw, 2.3rem);
   color: var(--color-text-light);
-  /* Removed text-shadow for main title */
   letter-spacing: 2px;
   margin: 0;
 }
 
 h1 .main-title {
   color: var(--color-accent-primary); /* Cyan for HackexAI itself */
-  /* Removed text-shadow for main title */
 }
-
 
 h1 .subtitle {
   display: block;
-  font-size: 0.35em;
+  font-size: clamp(0.4rem, 1.2vw, 0.8rem);
   color: var(--color-text-muted);
   margin-top: 4px;
   letter-spacing: 3px;
@@ -128,16 +137,16 @@ h1 .subtitle {
 
 h2 {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.5em;
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
   color: var(--color-accent-primary);
-  margin-bottom: 15px;
+  margin-bottom: clamp(10px, 1.5vh, 18px);
   text-shadow: 0 0 5px rgba(0, 192, 216, 0.2);
 }
 h3 {
   font-family: 'Rajdhani', sans-serif;
-  font-size: 1em;
+  font-size: clamp(0.9rem, 1.3vw, 1.1rem);
   color: var(--color-text-light);
-  margin-bottom: 10px;
+  margin-bottom: clamp(8px, 1vh, 12px);
   font-weight: 500;
 }
 
@@ -146,15 +155,19 @@ h3 {
   display: flex;
   flex: 1 1 auto;
   justify-content: center;
-  align-items: flex-start;
-  gap: 25px;
+  align-items: stretch;
+  gap: 30px;
   width: 100%;
-  height: 100%;
-  min-width: 0;
+  height: calc(100vh - var(--header-height, 120px));
   min-height: 0;
-  padding: 20px;
+  padding: 30px;
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow: hidden;
+}
+
+/* Dynamic header height calculation */
+:root {
+  --header-height: clamp(80px, 12vh, 120px);
 }
 
 
@@ -184,8 +197,8 @@ h3 {
 
 /* Specific Panel Widths */
 .system-stats-panel {
-  width: 350px;
-  min-width: 320px;
+  width: 400px;
+  min-width: 400px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -195,17 +208,70 @@ h3 {
   position: relative;
   overflow: hidden;
 }
+
 .desktop-panel { /* This panel is now in the middle */
-  flex-grow: 1; /* Desktop panel takes remaining space */
-  width: 420px; /* Base width */
-  overflow-y: auto; /* Enable scrolling for desktop icons if needed */
+  width: 950px;
+  min-width: 950px;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Align icons to the top-left */
-  padding: 20px;
+  align-items: flex-start;
 }
+
 .ai-chat-panel { /* This panel is now on the right */
-  width: 350px; /* Fixed width for AI chat */
+  width: 250px;
+  min-width: 250px;
+}
+
+
+
+/* Responsive panel widths - ONLY for smaller screens */
+@media (max-width: 1400px) {
+  .system-stats-panel,
+  .desktop-panel,
+  .ai-chat-panel {
+    width: 100%;
+    max-width: min(90vw, 850px);
+    height: auto;
+    min-height: clamp(400px, 50vh, 600px);
+    flex-shrink: 0;
+  }
+  
+  .desktop-panel {
+    min-height: clamp(300px, 35vh, 450px);
+  }
+  
+  .ai-chat-panel {
+    min-height: clamp(350px, 40vh, 500px);
+  }
+}
+
+@media (max-width: 768px) {
+  .system-stats-panel,
+  .desktop-panel,
+  .ai-chat-panel {
+    width: 100%;
+    max-width: 95vw;
+    min-height: clamp(350px, 45vh, 500px);
+  }
+  
+  .system-stats-panel {
+    min-height: clamp(400px, 50vh, 600px);
+  }
+}
+
+@media (max-width: 480px) {
+  .system-stats-panel,
+  .desktop-panel,
+  .ai-chat-panel {
+    width: 100%;
+    max-width: 98vw;
+    min-height: clamp(300px, 40vh, 450px);
+  }
+  
+  .system-stats-panel {
+    min-height: clamp(380px, 48vh, 550px);
+  }
 }
 
 
@@ -213,12 +279,15 @@ h3 {
 .system-stats-panel {
   justify-content: flex-start;
   overflow: hidden;
+  gap: 8px;
 }
 
 /* Always keep the boost button at the bottom of the system-stats-panel */
 .system-stats-panel > .action-button {
   margin-top: auto;
   margin-bottom: 0;
+  flex-shrink: 0;
+  align-self: stretch;
 }
 
 
@@ -227,6 +296,23 @@ h3 {
   justify-content: space-around;
   margin-bottom: 15px;
   gap: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+/* Responsive meter groups - ONLY for smaller screens */
+@media (max-width: 900px) {
+  .meter-group {
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(10px, 1.5vh, 15px);
+  }
+}
+
+@media (max-width: 768px) {
+  .meter-group {
+    gap: clamp(8px, 1.2vh, 12px);
+  }
 }
 
 /* NEW: GPU Group specific styling */
@@ -541,7 +627,7 @@ h3 {
   font-family: 'Roboto Mono', monospace;
   transition: all 0.3s ease;
   box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.15);
-
+}
 
 
 .text-input,
@@ -658,6 +744,10 @@ h3 {
     border-radius: 8px;
     padding: 15px;
     text-align: left;
+    flex: 1; /* Take remaining vertical space */
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Allow shrinking if needed */
 }
 
 .current-directory-view h3 {
@@ -677,48 +767,379 @@ h3 {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 320px;
-    min-height: 80px;
+    flex: 1; /* Take remaining space */
+    min-height: 120px; /* Minimum height for clickable area */
     overflow-y: auto;
-    padding-right: 5px;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+    padding: 8px;
     border-radius: 6px;
     background: rgba(0,192,216,0.02);
     box-shadow: 0 1px 8px 0 rgba(0,192,216,0.04);
+    box-sizing: border-box;
 }
 
-.current-directory-view .file-list::-webkit-scrollbar { width: 5px; }
-.current-directory-view .file-list::-webkit-scrollbar-track { background: rgba(0, 192, 216, 0.03); border-radius: 2px; }
-.current-directory-view .file-list::-webkit-scrollbar-thumb { background: rgba(0, 192, 216, 0.15); border-radius: 2px; }
-.current-directory-view .file-list::-webkit-scrollbar-thumb:hover { background: rgba(0, 192, 216, 0.3); }
+/* Improved scrollbar styling - only show when needed */
+.current-directory-view .file-list::-webkit-scrollbar { 
+    width: 6px; 
+}
+.current-directory-view .file-list::-webkit-scrollbar-track { 
+    background: transparent; 
+}
+.current-directory-view .file-list::-webkit-scrollbar-thumb { 
+    background: rgba(0, 192, 216, 0.2); 
+    border-radius: 3px; 
+    transition: background 0.2s ease;
+}
+.current-directory-view .file-list::-webkit-scrollbar-thumb:hover { 
+    background: rgba(0, 192, 216, 0.4); 
+}
+
+/* Hide scrollbar when not needed */
+.current-directory-view .file-list {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 192, 216, 0.2) transparent;
+}
 
 .current-directory-view .file-item {
     display: flex;
     align-items: center;
-    padding: 10px 14px;
+    padding: 12px 16px; /* Increased padding for wider tiles */
     background: rgba(0, 192, 216, 0.03);
     border-radius: 6px;
     border: 1px solid rgba(0, 192, 216, 0.07);
     cursor: pointer;
-    transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
+    transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.18s;
     font-family: 'Roboto Mono', monospace;
     font-size: 0.95em;
     color: var(--color-text-light);
     margin-bottom: 3px;
     box-shadow: 0 1px 4px 0 rgba(0,192,216,0.04);
+    min-height: 48px; /* Ensure consistent height */
+    width: 100%; /* Take full width of container */
+    box-sizing: border-box;
 }
 
 .current-directory-view .file-item:hover {
     background: rgba(0, 192, 216, 0.09);
     border-color: var(--color-accent-primary);
     box-shadow: 0 2px 12px 0 rgba(0,192,216,0.10);
+    transform: translateY(-1px); /* Subtle lift on hover */
 }
 
 .current-directory-view .file-item .icon {
-    margin-right: 8px;
+    margin-right: 12px; /* Increased spacing */
     color: var(--color-accent-primary);
-    font-size: 1.2em;
+    font-size: 1.4em; /* Larger icons */
+    flex-shrink: 0; /* Prevent icon from shrinking */
 }
 
 .current-directory-view .action-button.small {
     margin-top: 15px;
     align-self: flex-start; /* Align button to the left */
+}
+
+/* Search bar styling */
+.search-bar-container {
+    margin: 15px 0;
+    width: 100%;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(0, 192, 216, 0.3);
+    border-radius: 20px;
+    padding: 10px 16px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+
+.search-input-wrapper:focus-within {
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 15px rgba(0, 192, 216, 0.4);
+    background: rgba(0, 0, 0, 0.6);
+    transform: translateY(-1px);
+}
+
+.search-icon {
+    color: var(--color-accent-primary);
+    margin-right: 12px;
+    font-size: 1em;
+    flex-shrink: 0;
+    opacity: 0.8;
+}
+
+.search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--color-text-light);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.95em;
+    padding: 2px 0;
+    letter-spacing: 0.5px;
+}
+
+.search-input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.8;
+    font-style: italic;
+}
+
+/* File type specific icon colors */
+.file-audio {
+    color: #FF6B6B !important; /* Red for audio */
+}
+
+.file-video {
+    color: #4ECDC4 !important; /* Teal for video */
+}
+
+.file-image {
+    color: #45B7D1 !important; /* Blue for images */
+}
+
+.file-pdf {
+    color: #E74C3C !important; /* Red for PDF */
+}
+
+.file-word {
+    color: #2980B9 !important; /* Blue for Word */
+}
+
+.file-excel {
+    color: #27AE60 !important; /* Green for Excel */
+}
+
+.file-powerpoint {
+    color: #E67E22 !important; /* Orange for PowerPoint */
+}
+
+.file-code {
+    color: #9B59B6 !important; /* Purple for code files */
+}
+
+.file-archive {
+    color: #F39C12 !important; /* Yellow for archives */
+}
+
+/* Enhanced file item styling */
+.file-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-left: 8px;
+}
+
+.empty-message {
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+}
+
+/* Context Menu Styles */
+.context-menu {
+    position: fixed !important;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    font-family: var(--font-primary);
+    font-size: 13px;
+    user-select: none;
+    overflow: hidden;
+    z-index: 10000 !important;
+    min-width: 180px;
+    backdrop-filter: blur(8px);
+    animation: contextMenuFadeIn 0.15s ease-out;
+}
+
+@keyframes contextMenuFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.context-menu-item {
+    padding: 10px 16px;
+    color: var(--color-text-light);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.context-menu-item:hover {
+    background: var(--color-accent-primary);
+    color: var(--color-bg-primary);
+}
+
+.context-menu-item.context-menu-danger {
+    color: var(--color-error);
+}
+
+.context-menu-item.context-menu-danger:hover {
+    background: var(--color-error);
+    color: white;
+}
+
+.context-menu-separator {
+    height: 1px;
+    background: var(--color-border);
+    margin: 4px 0;
+    opacity: 0.5;
+}
+
+/* File list context menu support */
+.file-list {
+    min-height: 200px; /* Ensure there's clickable empty space */
+}
+
+.file-item {
+    user-select: none; /* Prevent text selection during right-click */
+}
+
+/* Properties Modal Styles */
+.modal-overlay {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20000 !important;
+    backdrop-filter: blur(4px);
+}
+
+.properties-modal {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8);
+    font-family: var(--font-primary);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: hidden;
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 192, 216, 0.05);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--color-accent-primary);
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    background: var(--color-error);
+    color: white;
+}
+
+.modal-content {
+    padding: 20px 24px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.property-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.property-row:last-child {
+    border-bottom: none;
+}
+
+.property-label {
+    font-weight: 600;
+    color: var(--color-text-muted);
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.property-value {
+    color: var(--color-text-light);
+    word-break: break-all;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+}
+/* Responsive layout for smaller screens ONLY */
+@media (max-width: 1200px) {
+  .app-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    overflow-y: auto;
+    height: calc(100vh - var(--header-height, 100px));
+  }
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    padding: 10px;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container {
+    padding: 5px;
+    gap: 10px;
+  }
+}
