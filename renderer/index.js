@@ -676,14 +676,247 @@ function FileSystem({ currentDirPath, fileSystemItems, searchQuery, handleFileIt
     );
 }
 
-function ChatPanel({ handleChatSend }) {
+// Functional ChatPanel component for AI chat interface
+function ChatPanel({ currentDirectory, systemStats }) {
+    const [messages, setMessages] = React.useState([]);
+    const [inputValue, setInputValue] = React.useState('');
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [isConnected, setIsConnected] = React.useState(null);
+    const [currentModel, setCurrentModel] = React.useState('llama3.3');
+    const [availableModels, setAvailableModels] = React.useState([]);
+    const chatDisplayRef = React.useRef(null);
+
+    // Load chat history and check AI connection on mount
+    React.useEffect(() => {
+        initializeChat();
+    }, []);
+
+    // Auto-scroll to bottom when new messages arrive
+    React.useEffect(() => {
+        if (chatDisplayRef.current) {
+            chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight;
+        }
+    }, [messages]);
+
+    const initializeChat = async () => {
+        try {
+            // Check connection and load models
+            const modelsResult = await window.electronAPI.aiListModels();
+            if (modelsResult.success) {
+                setAvailableModels(modelsResult.models);
+                setIsConnected(true);
+                addSystemMessage('🤖 HackexAI connected successfully! Type your message below.');
+            } else {
+                setIsConnected(false);
+                addSystemMessage('⚠️ AI service not available. Please ensure Ollama is installed and running.');
+            }
+
+            // Load previous chat history
+            const historyResult = await window.electronAPI.aiGetHistory();
+            if (historyResult.success && historyResult.history.length > 0) {
+                const formattedHistory = historyResult.history.map(msg => ({
+                    id: Date.now() + Math.random(),
+                    role: msg.role,
+                    content: msg.content,
+                    timestamp: new Date(msg.timestamp)
+                }));
+                setMessages(formattedHistory);
+            }
+        } catch (error) {
+            console.error('Error initializing chat:', error);
+            setIsConnected(false);
+            addSystemMessage('❌ Error initializing AI chat. Please check your setup.');
+        }
+    };
+
+    const addSystemMessage = (content) => {
+        const systemMessage = {
+            id: Date.now() + Math.random(),
+            role: 'system',
+            content,
+            timestamp: new Date()
+        };
+        setMessages(prev => [...prev, systemMessage]);
+    };
+
+    const handleSend = async () => {
+        if (!inputValue.trim() || isLoading) return;
+
+        const userMessage = {
+            id: Date.now() + Math.random(),
+            role: 'user',
+            content: inputValue.trim(),
+            timestamp: new Date()
+        };
+
+        setMessages(prev => [...prev, userMessage]);
+        setInputValue('');
+        setIsLoading(true);
+
+        try {
+            // Prepare context for AI
+            const context = {
+                currentDirectory,
+                systemStats,
+                timestamp: new Date().toISOString()
+            };
+
+            const response = await window.electronAPI.aiChat(userMessage.content, context);
+
+            const aiMessage = {
+                id: Date.now() + Math.random(),
+                role: 'assistant',
+                content: response.message,
+                timestamp: new Date(),
+                model: response.model,
+                success: response.success
+            };
+
+            setMessages(prev => [...prev, aiMessage]);
+
+            if (!response.success) {
+                setIsConnected(false);
+            }
+        } catch (error) {
+            console.error('Error sending message:', error);
+            const errorMessage = {
+                id: Date.now() + Math.random(),
+                role: 'system',
+                content: '❌ Error sending message. Please try again.',
+                timestamp: new Date()
+            };
+            setMessages(prev => [...prev, errorMessage]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+        }
+    };
+
+    const clearChat = async () => {
+        try {
+            await window.electronAPI.aiClearHistory();
+            setMessages([]);
+            addSystemMessage('🧹 Chat history cleared.');
+        } catch (error) {
+            console.error('Error clearing chat:', error);
+            addSystemMessage('❌ Error clearing chat history.');
+        }
+    };
+
+    const formatMessage = (message) => {
+        // Basic markdown-like formatting
+        let formatted = message.content;
+        
+        // Format code blocks
+        formatted = formatted.replace(/```([\s\S]*?)```/g, '<pre class="code-block">$1</pre>');
+        
+        // Format inline code
+        formatted = formatted.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+        
+        // Format bold text
+        formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        return formatted;
+    };
+
+    const getMessageIcon = (role) => {
+        switch (role) {
+            case 'user': return '👤';
+            case 'assistant': return '🤖';
+            case 'system': return '⚙️';
+            default: return '💬';
+        }
+    };
+
+    const getMessageClass = (message) => {
+        let baseClass = 'chat-message';
+        if (message.role === 'user') baseClass += ' user-message';
+        if (message.role === 'assistant') baseClass += ' ai-message';
+        if (message.role === 'system') baseClass += ' system-message';
+        if (message.success === false) baseClass += ' error-message';
+        return baseClass;
+    };
+
     return (
         React.createElement("div", { className: "panel ai-chat-panel" },
-            React.createElement("h2", null, "AI Command Terminal"),
-            React.createElement("div", { id: "chat-display", className: "chat-terminal" }, "Files Go Here"),
+            // Header with status and controls
+            React.createElement("div", { className: "chat-header" },
+                React.createElement("h2", null, "🤖 HackexAI Chat"),
+                React.createElement("div", { className: "chat-controls" },
+                    React.createElement("span", { 
+                        className: `connection-status ${isConnected ? 'connected' : 'disconnected'}` 
+                    }, isConnected ? '🟢 Connected' : '🔴 Disconnected'),
+                    React.createElement("button", { 
+                        className: "clear-chat-btn",
+                        onClick: clearChat,
+                        title: "Clear chat history"
+                    }, "🗑️")
+                )
+            ),
+            
+            // Chat display area
+            React.createElement("div", { 
+                ref: chatDisplayRef,
+                className: "chat-display"
+            }, messages.length === 0 
+                ? React.createElement("div", { className: "empty-chat" }, 
+                    "👋 Welcome to HackexAI! Start by typing a message below.")
+                : messages.map(message => 
+                    React.createElement("div", { 
+                        key: message.id,
+                        className: getMessageClass(message)
+                    },
+                        React.createElement("div", { className: "message-header" },
+                            React.createElement("span", { className: "message-icon" }, getMessageIcon(message.role)),
+                            React.createElement("span", { className: "message-role" }, 
+                                message.role === 'user' ? 'You' : 
+                                message.role === 'assistant' ? `AI${message.model ? ` (${message.model})` : ''}` : 
+                                'System'
+                            ),
+                            React.createElement("span", { className: "message-time" }, 
+                                message.timestamp.toLocaleTimeString()
+                            )
+                        ),
+                        React.createElement("div", { 
+                            className: "message-content",
+                            dangerouslySetInnerHTML: { __html: formatMessage(message) }
+                        })
+                    )
+                )
+            ),
+            
+            // Loading indicator
+            isLoading && React.createElement("div", { className: "loading-indicator" },
+                React.createElement("span", null, "🤖 AI is thinking..."),
+                React.createElement("div", { className: "loading-dots" },
+                    React.createElement("span", null, "●"),
+                    React.createElement("span", null, "●"),
+                    React.createElement("span", null, "●")
+                )
+            ),
+            
+            // Input area
             React.createElement("div", { className: "chat-input-area" },
-                React.createElement("input", { id: "chat-input", placeholder: ">> Enter command or query...", className: "text-input" }),
-                React.createElement("button", { id: "chat-send", className: "send-button" }, "EXECUTE")
+                React.createElement("textarea", {
+                    value: inputValue,
+                    onChange: (e) => setInputValue(e.target.value),
+                    onKeyPress: handleKeyPress,
+                    placeholder: "Type your message... (Enter to send, Shift+Enter for new line)",
+                    className: "chat-input",
+                    rows: 1,
+                    disabled: isLoading || !isConnected
+                }),
+                React.createElement("button", {
+                    onClick: handleSend,
+                    disabled: !inputValue.trim() || isLoading || !isConnected,
+                    className: "send-button"
+                }, isLoading ? "⏳" : "Send ▶")
             )
         )
     );
@@ -860,26 +1093,6 @@ function App() {
         console.log("Boost button clicked!");
     }, []);
 
-    const handleChatSend = React.useCallback(() => {
-        const inputElement = document.getElementById('chat-input');
-        const display = document.getElementById('chat-display');
-        
-        if (!inputElement || !display) return;
-        
-        const input = inputElement.value;
-        if (input.trim() === "") return;
-
-        display.innerHTML += `<div><b>You:</b> ${input}</div>`;
-
-        setTimeout(() => {
-            display.innerHTML += `<div><b>AI:</b> Query acknowledged. Standing by for deeper system integration.</div>`;
-            display.scrollTop = display.scrollHeight;
-        }, 500); // Reduced timeout for better responsiveness
-
-        inputElement.value = "";
-        inputElement.focus();
-    }, []);
-
     // Search functionality
     const handleSearchChange = React.useCallback((e) => {
         setSearchQuery(e.target.value);
@@ -900,25 +1113,11 @@ function App() {
 
     React.useEffect(() => {
         const boostButton = document.getElementById('boost-button');
-        const chatSendButton = document.getElementById('chat-send');
-        const chatInput = document.getElementById('chat-input');
         const openExplorerButton = document.getElementById('open-file-explorer-button');
-
-        const handleKeyPress = (event) => {
-            if (event.key === 'Enter') {
-                handleChatSend();
-            }
-        };
 
         // Add event listeners
         if (boostButton) {
             boostButton.addEventListener('click', handleBoostClick);
-        }
-        if (chatSendButton) {
-            chatSendButton.addEventListener('click', handleChatSend);
-        }
-        if (chatInput) {
-            chatInput.addEventListener('keypress', handleKeyPress);
         }
         if (openExplorerButton) {
             openExplorerButton.addEventListener('click', handleOpenExplorer);
@@ -927,11 +1126,9 @@ function App() {
         // Cleanup function
         return () => {
             if (boostButton) boostButton.removeEventListener('click', handleBoostClick);
-            if (chatSendButton) chatSendButton.removeEventListener('click', handleChatSend);
-            if (chatInput) chatInput.removeEventListener('keypress', handleKeyPress);
             if (openExplorerButton) openExplorerButton.removeEventListener('click', handleOpenExplorer);
         };
-    }, [handleBoostClick, handleChatSend, handleOpenExplorer]);
+    }, [handleBoostClick, handleOpenExplorer]);
 
 
     return (
@@ -960,7 +1157,8 @@ function App() {
                 
                 // AI Chat Panel (Right)
                 React.createElement(ChatPanel, {
-                    handleChatSend: handleChatSend
+                    currentDirectory: currentDirPath,
+                    systemStats: stats
                 })
             )
         )

@@ -4,8 +4,12 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:css": "npx tailwindcss -i ./renderer/styles.css -o ./renderer/dist/styles.css --watch",
-    "start": "electron ."
+    "build:css": "npx tailwindcss -i ./renderer/styles.css -o ./renderer/dist/styles.css",
+    "watch:css": "npx tailwindcss -i ./renderer/styles.css -o ./renderer/dist/styles.css --watch",
+    "start:electron": "electron .",
+    "dev": "concurrently \"npm run watch:css\" \"npm run start:electron\"",
+    "start": "npm run build:css && npm run start:electron",
+    "clean": "rm -rf ./renderer/dist && mkdir ./renderer/dist"
   },
   "keywords": [],
   "author": "",
@@ -13,11 +17,15 @@
   "description": "",
   "devDependencies": {
     "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.0",
     "electron": "^37.1.0",
+    "nodemon": "^3.1.10",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17"
   },
   "dependencies": {
+    "axios": "^1.6.2",
+    "ollama": "^0.5.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",

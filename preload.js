@@ -18,5 +18,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
     createFolder: (dirPath, folderName) => ipcRenderer.invoke('create-folder', dirPath, folderName),
     createFile: (dirPath, fileName) => ipcRenderer.invoke('create-file', dirPath, fileName),
     getFileProperties: (path) => ipcRenderer.invoke('get-file-properties', path),
-    showFileProperties: (path) => ipcRenderer.invoke('show-file-properties', path)
+    showFileProperties: (path) => ipcRenderer.invoke('show-file-properties', path),
+
+    // AI Service functions
+    aiChat: (message, context) => ipcRenderer.invoke('ai-chat', message, context),
+    aiListModels: () => ipcRenderer.invoke('ai-list-models'),
+    aiSetModel: (modelName) => ipcRenderer.invoke('ai-set-model', modelName),
+    aiClearHistory: () => ipcRenderer.invoke('ai-clear-history'),
+    aiGetHistory: () => ipcRenderer.invoke('ai-get-history'),
+    aiExecuteCommand: (command) => ipcRenderer.invoke('ai-execute-command', command)
 });

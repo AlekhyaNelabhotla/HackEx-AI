@@ -3,6 +3,123 @@ const os = require('os');
 const path = require('path');
 const si = require('systeminformation'); // Install with: npm install systeminformation
 const fs = require('fs').promises; // Use promises version of fs
+const { Ollama } = require('ollama'); // AI integration
+
+// Initialize Ollama client
+const ollama = new Ollama({ host: 'http://127.0.0.1:11434' });
+
+// AI Service for handling chat interactions
+class AIService {
+    constructor() {
+        this.conversationHistory = [];
+        this.defaultModel = 'llama3.2:1b'; // You can change this to any model you have installed
+        this.systemPrompt = `You are HackexAI, an advanced AI assistant integrated into a desktop application. You can help with:
+- File and system operations
+- Programming and development tasks  
+- System optimization and troubleshooting
+- General questions and explanations
+- Command execution (when requested)
+
+You have access to the user's file system and can perform various operations. Always be helpful, accurate, and concise in your responses.`;
+    }
+
+    async sendMessage(userMessage, context = {}) {
+        try {
+            // Add user message to conversation history
+            this.conversationHistory.push({
+                role: 'user',
+                content: userMessage,
+                timestamp: new Date().toISOString()
+            });
+
+            // Prepare messages for Ollama
+            const messages = [
+                { role: 'system', content: this.systemPrompt },
+                ...this.conversationHistory.slice(-10) // Keep last 10 messages for context
+            ];
+
+            // Add context information if provided
+            if (context.currentDirectory) {
+                messages.push({
+                    role: 'system',
+                    content: `Current directory: ${context.currentDirectory}`
+                });
+            }
+
+            if (context.systemStats) {
+                messages.push({
+                    role: 'system', 
+                    content: `System Stats - CPU: ${context.systemStats.cpu}%, RAM: ${context.systemStats.ram}%, GPU: ${context.systemStats.gpu}%`
+                });
+            }
+
+            // Send to Ollama
+            const response = await ollama.chat({
+                model: this.defaultModel,
+                messages: messages,
+                stream: false
+            });
+
+            const aiResponse = response.message.content;
+
+            // Add AI response to conversation history
+            this.conversationHistory.push({
+                role: 'assistant',
+                content: aiResponse,
+                timestamp: new Date().toISOString()
+            });
+
+            return {
+                success: true,
+                message: aiResponse,
+                model: this.defaultModel
+            };
+
+        } catch (error) {
+            console.error('AI Service Error:', error);
+            
+            // Fallback response if Ollama is not available
+            let fallbackMessage = "I'm having trouble connecting to the AI service. ";
+            
+            if (error.code === 'ECONNREFUSED') {
+                fallbackMessage += "Please make sure Ollama is installed and running. You can install it from https://ollama.ai and run 'ollama serve' in your terminal.";
+            } else {
+                fallbackMessage += `Error: ${error.message}`;
+            }
+
+            return {
+                success: false,
+                message: fallbackMessage,
+                error: error.message
+            };
+        }
+    }
+
+    async listAvailableModels() {
+        try {
+            const models = await ollama.list();
+            return models.models.map(model => model.name);
+        } catch (error) {
+            console.error('Error listing models:', error);
+            return [];
+        }
+    }
+
+    setModel(modelName) {
+        this.defaultModel = modelName;
+    }
+
+    clearHistory() {
+        this.conversationHistory = [];
+    }
+
+    getHistory() {
+        return this.conversationHistory;
+    }
+}
+
+// Initialize AI service
+const aiService = new AIService();
 
 function createWindow() {
     const primaryDisplay = screen.getPrimaryDisplay();
@@ -439,6 +556,127 @@ ipcMain.handle('get-system-stats', async () => {
             cpu: "0.0", ram: "0.0", storage: "50.0",
             rx_sec: 0, tx_sec: 0, gpu: "0.0", gpu_temp: "0.0",
             cpu_temp: "45.0", uptime: os.uptime(), processes: 100
+        };
+    }
+});
+
+// ===== AI Service IPC Handlers =====
+
+// Handle chat messages from the renderer
+ipcMain.handle('ai-chat', async (event, message, context = {}) => {
+    try {
+        console.log('AI Chat request:', message);
+        
+        // Get current system stats to provide context
+        const systemStats = statsCache || await si.currentLoad().then(load => ({
+            cpu: load.currentLoad?.toFixed(1) || '0.0',
+            ram: ((os.totalmem() - os.freemem()) / os.totalmem() * 100).toFixed(1),
+            gpu: '0.0' // Simplified for context
+        })).catch(() => ({ cpu: '0.0', ram: '0.0', gpu: '0.0' }));
+
+        // Enhance context with system information
+        const enhancedContext = {
+            ...context,
+            systemStats,
+            platform: os.platform(),
+            arch: os.arch(),
+            hostname: os.hostname()
+        };
+
+        const response = await aiService.sendMessage(message, enhancedContext);
+        console.log('AI response:', response.success ? 'Success' : 'Failed');
+        
+        return response;
+    } catch (error) {
+        console.error('Error in AI chat handler:', error);
+        return {
+            success: false,
+            message: 'An error occurred while processing your request.',
+            error: error.message
+        };
+    }
+});
+
+// Get available AI models
+ipcMain.handle('ai-list-models', async () => {
+    try {
+        const models = await aiService.listAvailableModels();
+        return { success: true, models };
+    } catch (error) {
+        console.error('Error listing AI models:', error);
+        return { success: false, models: [], error: error.message };
+    }
+});
+
+// Set AI model
+ipcMain.handle('ai-set-model', async (event, modelName) => {
+    try {
+        aiService.setModel(modelName);
+        return { success: true, model: modelName };
+    } catch (error) {
+        console.error('Error setting AI model:', error);
+        return { success: false, error: error.message };
+    }
+});
+
+// Clear chat history
+ipcMain.handle('ai-clear-history', async () => {
+    try {
+        aiService.clearHistory();
+        return { success: true };
+    } catch (error) {
+        console.error('Error clearing AI history:', error);
+        return { success: false, error: error.message };
+    }
+});
+
+// Get chat history
+ipcMain.handle('ai-get-history', async () => {
+    try {
+        const history = aiService.getHistory();
+        return { success: true, history };
+    } catch (error) {
+        console.error('Error getting AI history:', error);
+        return { success: false, history: [], error: error.message };
+    }
+});
+
+// Execute system commands through AI (with safety checks)
+ipcMain.handle('ai-execute-command', async (event, command) => {
+    try {
+        // Safety check - only allow certain safe commands
+        const safeCommands = [
+            'dir', 'ls', 'pwd', 'whoami', 'date', 'time',
+            'systeminfo', 'tasklist', 'ipconfig', 'ping'
+        ];
+        
+        const commandBase = command.split(' ')[0].toLowerCase();
+        if (!safeCommands.includes(commandBase)) {
+            return {
+                success: false,
+                output: 'Command not allowed for security reasons. Only basic system information commands are permitted.',
+                error: 'Command restricted'
+            };
+        }
+
+        const { exec } = require('child_process');
+        const { promisify } = require('util');
+        const execAsync = promisify(exec);
+
+        const { stdout, stderr } = await execAsync(command);
+        
+        return {
+            success: true,
+            output: stdout || stderr,
+            command: command
+        };
+    } catch (error) {
+        console.error('Error executing command:', error);
+        return {
+            success: false,
+            output: error.message,
+            error: error.message,
+            command: command
         };
     }
 });

@@ -1,32 +1,88 @@
-# HackEx-AI Setup Guide
+# 🔧 HackexAI - Complete Setup Guide
 
-## Prerequisites
+## 🎯 Overview
+This guide will walk you through setting up HackexAI from scratch. Follow these steps carefully for a smooth installation experience.
 
-### 1. Node.js Installation
-- **Download**: [Node.js 18.x or later](https://nodejs.org/)
-- **Verify**: Run `node --version` and `npm --version` in terminal
-- **Required**: Node.js 18+ is required for React 19 compatibility
+## 📋 Prerequisites
 
-### 2. Windows-Specific Requirements
-- **Windows 10/11**: Required for proper file system integration
-- **Administrator Rights**: May be needed for initial setup
-- **Windows Defender**: Add project folder to exclusions for better performance
+### Required Software
+1. **Node.js (v18.0.0+)** - [Download](https://nodejs.org/)
+2. **Git** - [Download](https://git-scm.com/)
+3. **Ollama** - [Download](https://ollama.ai/)
 
-## Installation Steps
+### System Requirements
+- **OS**: Windows 10/11, macOS 10.15+, Linux Ubuntu 18.04+
+- **RAM**: 8GB minimum (16GB recommended for larger AI models)
+- **Storage**: 10GB free space (more for additional AI models)
+- **Network**: Internet connection for initial setup and model downloads
 
-### Step 1: Clone/Download Project
+## 🚀 Installation Steps
+
+### Step 1: Install Node.js and npm
 ```bash
-# Navigate to project directory
-cd path/to/HackEx-AI
+# Verify installation
+node --version  # Should show v18.0.0 or higher
+npm --version   # Should show npm version
 ```
 
-### Step 2: Install Dependencies
+### Step 2: Install Ollama
 ```bash
-# Install all dependencies
+# Windows (using winget)
+winget install ollama
+
+# macOS (using Homebrew)
+brew install ollama
+
+# Linux
+curl -fsSL https://ollama.ai/install.sh | sh
+```
+
+### Step 3: Clone and Setup Project
+```bash
+# Clone the repository
+git clone https://github.com/YourUsername/HackEx-AI.git
+cd HackEx-AI
+
+# Install dependencies
 npm install
 
-# If you encounter permission errors, try:
-npm install --legacy-peer-deps
+# Install system information package
+npm install systeminformation
+
+# Install Ollama JavaScript client
+npm install ollama
+
+# Install React Icons for UI enhancement
+npm install react-icons
+```
+
+### Step 4: Start Ollama Service
+```bash
+# Start Ollama in a new terminal window
+ollama serve
+
+# Keep this terminal open - Ollama needs to run continuously
+```
+
+### Step 5: Download AI Models
+```bash
+# In another terminal, download your preferred model
+# Lightweight option (recommended for testing)
+ollama pull llama3.2:1b
+
+# Alternative models (choose one based on your system):
+# ollama pull llama3.2:3b    # Medium size, good balance
+# ollama pull llama3.1:8b    # Large, more capable
+# ollama pull llama3.3       # Latest, most advanced
+```
+
+### Step 6: Build and Run
+```bash
+# Build CSS styles
+npm run build:css
+
+# Start the application
+npm start
 ```
 
 ### Step 3: Build CSS
@@ -154,7 +210,7 @@ npm start
 - **Storage**: 500MB free space
 - **Node.js**: 18.x or later
 - **Electron**: Compatible GPU for hardware acceleration
-- **Screen Resolution**: 1280x720 minimum, 1366x768 recommended (desktop/laptop only)
+- **Screen Resolution**: 1366x768 minimum (responsive design supports smaller)
 
 ### Recommended Setup
 - **OS**: Windows 11
@@ -247,18 +303,17 @@ If you still encounter issues:
 
 ### Screen Compatibility
 
-**Supported Resolutions** (Desktop/Laptop Only):
-- **Minimum**: 1280x720 (netbook/small laptop)
-- **Common**: 1366x768 (standard laptop)
-- **Optimal**: 1920x1080 (desktop/large laptop)
+**Supported Resolutions**:
+- **Minimum**: 1366x768 (laptop/tablet)
+- **Optimal**: 1920x1080 (desktop)
 - **Large**: 2560x1440+ (automatically scales)
 
 **Layout Modes**:
-- **Wide Screen (>1600px)**: Three-panel horizontal layout (optimal experience)
-- **Standard (1366-1600px)**: Responsive horizontal layout with adjusted panel sizes
-- **Compact (<1366px)**: Condensed horizontal layout for smaller laptops
+- **Wide Screen (>1400px)**: Three-panel horizontal layout
+- **Medium Screen (1200-1400px)**: Responsive horizontal layout with smaller panels
+- **Small Screen (<1200px)**: Vertical stacked layout
 
 **Display Scaling**:
 - **100%-125%**: Recommended for best experience
-- **150%+**: May cause layout issues, use 100-125% for optimal results
+- **150%+**: May cause layout issues, use with caution
 - **High DPI**: Automatically detected and supported

@@ -1,0 +1,17 @@
+{
+  "name": "HackexAI Development",
+  "type": "node",
+  "request": "launch",
+  "program": "${workspaceFolder}/main.js",
+  "console": "integratedTerminal",
+  "env": {
+    "NODE_ENV": "development",
+    "ELECTRON_ENABLE_LOGGING": "true"
+  },
+  "runtimeExecutable": "electron",
+  "runtimeArgs": [
+    "--remote-debugging-port=9222"
+  ],
+  "preLaunchTask": "Build CSS",
+  "postDebugTask": "Clean up"
+}
